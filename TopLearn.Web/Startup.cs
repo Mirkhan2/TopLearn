@@ -15,28 +15,28 @@ namespace TopLearn.Web
 {
 	public class Startup
 	{
-        //public IConfiguration Configuration { get; set; }
+        public IConfiguration Configuration { get; set; }
         public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
 		}
 
-		public IConfiguration Configuration { get; }
+		
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
 			//services.AddMvc();
 			services.AddControllersWithViews();
-			services.AddRazorPages();
+			//services.AddRazorPages();
 			#region DataBase Context
 			
-			//services.AddDbContext<TopLearnContext>(options =>
-			//{
-			//	options.UseSqlServer(Configuration.GetConnectionString("TopLearnConnection"));
-			//}
+			services.AddDbContext<TopLearnDbContext>(options =>
+			{
+				options.UseSqlServer(Configuration.GetConnectionString("TopLearnConnection"));
+			}
 
-			//);
+			);
 
 			#endregion
 			//services.AddRazorPages();
@@ -63,10 +63,10 @@ namespace TopLearn.Web
 
 			app.UseAuthorization();
 
-			//app.UseEndpoints(endpoints =>
-			//{
-			//	endpoints.MapRazorPages();
-			//});
+			app.UseEndpoints(endpoints =>
+			{ 
+				endpoints.MapRazorPages();
+			});
 		}
 	}
 }

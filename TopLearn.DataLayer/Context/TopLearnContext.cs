@@ -24,6 +24,6 @@ namespace TopLearn.DataLayer.Context
         public DbSet<User> Users { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
 
-        #endregion
+       
+} #endregion
     }
-}
