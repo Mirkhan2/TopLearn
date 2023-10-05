@@ -1,59 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using TopLearn.DataLayeer.Entities;
 
-namespace TopLearn.DataLayeer.Entities
+namespace TopLearn.DataLayeer.Entities.User
 {
+    public class User
+    {
+        public User()
+        {
 
-	public class User
-	{
+        }
 
-		public User()
-		{
+        [Key]
+        public int UserId { get; set; }
 
-		}
-		[Key]
-		public int UserId { get; set; }
+        [Display(Name = "نام کاربری")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+        [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string UserName { get; set; }
 
-		[Display(Name = "UserName")]
-		[Required(ErrorMessage = "Please Add{0}")]
-		[MaxLength(100, ErrorMessage = "Its Cant be Longer{1} than{0} character.")]
-		public string UserName { get; set; }
+        [Display(Name = "ایمیل")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+        [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [EmailAddress(ErrorMessage = "ایمیل وارد شده معتبر نمی باشد")]
+        public string Email { get; set; }
 
-		[Display(Name = "Email")]
-		[Required(ErrorMessage = "Please Add{0}")]
-		[MaxLength(100, ErrorMessage = "Its Cant be Longer{1} than{0} character.}")]
-		[EmailAddress(ErrorMessage = "Email doesnt Exit")]
-		public string Email { get; set; }
+        [Display(Name = "کلمه عبور")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+        [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string Password { get; set; }
+
+        [Display(Name = "کد فعال سازی")]
+        [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string ActiveCode { get; set; }
+
+        [Display(Name = "وضعیت")]
+        public bool IsActive { get; set; }
+
+        [Display(Name = "آواتار")]
+        [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string UserAvatar { get; set; }
+
+        [Display(Name = "تاریخ ثبت نام")]
+        public DateTime RegisterDate { get; set; }
 
 
-		[Display(Name = "Password")]
-		[Required(ErrorMessage = "Please Add{0}")]
-		[MaxLength(100, ErrorMessage = "Its Cant be Longer{1} than{0} character.")]
-		public string Password { get; set; }
+        #region Relations
 
-		[Display(Name = "ActiveCode")]
-		[MaxLength(100, ErrorMessage = "Its Cant be Longer{1} than{0} character.")]
-		protected string ActiveCode { get; set; }
+        public virtual List<UserRole> UserRoles { get; set; }
 
-		[Display(Name = "Activr")]
-		public bool IsActive { get; set; }
+        #endregion
 
-		[Display(Name = "Avatar")]
-		[MaxLength(50, ErrorMessage = "Its Cant be Longer{1} than{0} character.")]
-		public string UserAvatar { get; set; }
-
-		[Display(Name = "Date")]
-		public DateTime RegisterDate { get; set; }
-
-		#region Relations 
-
-		public virtual List<UserRole> UserRoles { get; set; }
-
-		#endregion
-
-	}
+    }
 }
