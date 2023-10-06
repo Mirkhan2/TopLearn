@@ -3,27 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 using Microsoft.AspNetCore.Mvc;
 using TopLearn.Core.Convertor;
+
 using TopLearn.Core.DTOs;
 using TopLearn.Core.Generator;
 using TopLearn.Core.Security;
+using TopLearn.Core.Senders;
 using TopLearn.Core.Services.Interfaces;
 using TopLearn.DataLayeer.Entities.User;
 
-namespace TopLearn.Web.Controllers
+
+namespace TopLearn.Wab.Controllers
 {
     public class AccountController : Controller
     {
         private IUserService _userService;
+        private IViewRenderService _viewRender;
 
-        public AccountController(IUserService userService)
+        public AccountController(IUserService userService, IViewRenderService viewRender)
         {
             _userService = userService;
+            _viewRender = viewRender;
         }
+
+
+
+
 
         #region Register
 
@@ -68,7 +78,12 @@ namespace TopLearn.Web.Controllers
             };
             _userService.AddUser(user);
 
-            //TODO Send Activation Email
+            #region Send Activation Email
+
+            string body = _viewRender.RenderToStringAsync("_ActiveEmail", user);
+            SendEmail.Send(user.Email, "فعالسازی", body);
+
+            #endregion
 
             return View("SuccessRegister", user);
         }
@@ -143,6 +158,69 @@ namespace TopLearn.Web.Controllers
             return Redirect("/Login");
         }
 
+        #endregion
+
+
+        #region Forgot Password
+        [Route("ForgotPassword")]
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("ForgotPassword")]
+        public ActionResult ForgotPassword(ForgotPasswordViewModel forgot)
+        {
+            if (!ModelState.IsValid)
+                return View(forgot);
+
+            string fixedEmail = FixedText.FixEmail(forgot.Email);
+            DataLayeer.Entities.User.User user = _userService.GetUserByEmail(fixedEmail);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("Email", "کاربری یافت نشد");
+                return View(forgot);
+            }
+
+            string bodyEmail = _viewRender.RenderToStringAsync("_ForgotPassword", user);
+            SendEmail.Send(user.Email, "بازیابی حساب کاربری", bodyEmail);
+            ViewBag.IsSuccess = true;
+
+            return View();
+        }
+        #endregion
+
+        #region Reset Password
+
+        public ActionResult ResetPassword(string id)
+        {
+            return View(new ResetPasswordViewModel()
+            {
+                ActiveCode = id
+            });
+        }
+
+
+        [HttpPost]
+        public ActionResult ResetPassword(ResetPasswordViewModel reset)
+        {
+            if (!ModelState.IsValid)
+                return View(reset);
+
+            DataLayeer.Entities.User.User user = _userService.GetUserByActiceCode(reset.ActiveCode);
+
+            if (user == null)
+                return NotFound();
+
+            string hashNewPassword = PasswordHelper.EncodePasswordMd5(reset.Password);
+            user.Password = hashNewPassword;
+            _userService.UpdateUser(user);
+
+            return Redirect("/Login");
+
+        }
         #endregion
     }
 }
