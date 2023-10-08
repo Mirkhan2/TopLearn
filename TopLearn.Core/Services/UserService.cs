@@ -12,9 +12,11 @@ using TopLearn.DataLayeer.Context;
 using TopLearn.DataLayeer.Entities.User;
 using TopLearn.DataLayeer.Context;
 using TopLearn.DataLayeer.Entities.User;
+using System.IO;
 
 namespace TopLearn.Core.Services
 {
+
     public class UserService : IUserService
     {
         private TopLearnContext _context;
@@ -53,12 +55,16 @@ namespace TopLearn.Core.Services
         {
             return _context.Users.SingleOrDefault(u => u.Email == email);
         }
-        public User GetUserByActiceCode(string acticeCode)
+
+        public User GetUserByActiveCode(string activeCode)
         {
-            return _context.Users.SingleOrDefault(u => u.ActiveCode == acticeCode);
+            return _context.Users.SingleOrDefault(u => u.ActiveCode == activeCode);
         }
 
-
+        public User GetUserByUserName(string username)
+        {
+            return _context.Users.SingleOrDefault(u => u.UserName == username);
+        }
 
         public void UpdateUser(User user)
         {
@@ -79,24 +85,18 @@ namespace TopLearn.Core.Services
             return true;
         }
 
-        public InformationUserViewModel GetUSerInformation(string username)
+        public InformationUserViewModel  GetUSerInformation(string username)
         {
             var user = GetUserByUserName(username);
-          InformationUserViewModel information = new InformationUserViewModel();    
+            InformationUserViewModel information = new InformationUserViewModel();
             information.UserName = user.UserName;
             information.Email = user.Email;
             information.RegisterDate = user.RegisterDate;
             information.Wallet = 0;
 
             return information;
-           
-        }
 
-        public User GetUserByUserName(string username)
-        {
-           return _context.Users.SingleOrDefault(u => u.UserName == username);
         }
-
 
         public SideBarUserPanelViewModel GetSideBarUserPanelData(string username)
         {
@@ -110,11 +110,60 @@ namespace TopLearn.Core.Services
 
         public EditProfileViewModel GetDataForEditProfileUser(string username)
         {
-            return _context.Users.Where(u => u.UserName == username ).Select(u => new EditProfileViewModel)
-                {
-                Avatar
+            return _context.Users.Where(u => u.UserName == username).Select(u => new EditProfileViewModel()
+            {
+                AvatarName = u.UserAvatar,
+                Email = u.Email,
+                UserName = u.UserName
+
             }).Single();
         }
+
+        public void EditProfile(string username, EditProfileViewModel profile)
+        {
+            if (profile.UserAvatar != null)
+            {
+                string imagePath = "";
+                if (profile.AvatarName != "Defult.jpg")
+                {
+                    imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UserAvatar", profile.AvatarName);
+                    if (File.Exists(imagePath))
+                    {
+                        File.Delete(imagePath);
+                    }
+                }
+
+                profile.AvatarName = NameGenerator.GenerateUniqCode() + Path.GetExtension(profile.UserAvatar.FileName);
+                imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UserAvatar", profile.AvatarName);
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    profile.UserAvatar.CopyTo(stream);
+                }
+
+            }
+
+            var user = GetUserByUserName(username);
+            user.UserName = profile.UserName;
+            user.Email = profile.Email;
+            user.UserAvatar = profile.AvatarName;
+
+            UpdateUser(user);
+
+        }
+
+        public bool CompareOldPassword(string oldPassword, string username)
+        {
+         
+            string hashOldPassword = PasswordHelper.EncodePasswordMd5(oldPassword);
+            return _context.Users.Any(u => u.UserName == username && u.Password == hashOldPassword);
+
+        }
+
+        public void ChangeUserPassword(string userName, string newPassword)
+        {
+           var user = GetUserByUserName(userName);
+            user.Password = PasswordHelper.EncodePasswordMd5(newPassword);
+            UpdateUser(user);
+        }
     }
-    
 }

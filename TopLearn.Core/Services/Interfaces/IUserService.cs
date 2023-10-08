@@ -16,7 +16,7 @@ namespace TopLearn.Core.Services.Interfaces
         int AddUser(User user);
         User LoginUser(LoginViewModel user);
         User GetUserByEmail(string email);
-        User GetUserByActiceCode(string acticeCode);    
+        User GetUserByActiveCode(string acticeCode);    
 
         User GetUserByUserName(string username);
      
@@ -26,7 +26,9 @@ namespace TopLearn.Core.Services.Interfaces
         InformationUserViewModel GetUSerInformation(string username);
         SideBarUserPanelViewModel GetSideBarUserPanelData(string username);
         EditProfileViewModel GetDataForEditProfileUser(string username);
-
+        void EditProfile(string username,EditProfileViewModel profile);
+        bool CompareOldPassword(string oldPassword , string username);
+        void ChangeUserPassword(string userName , string newPassword);
         #endregion
 
     }

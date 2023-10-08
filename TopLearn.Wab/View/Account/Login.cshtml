@@ -24,6 +24,13 @@
                 setTimeout(function () { window.location = "https://localhost:44349/UserPanel"; }, delay);
             </script>
         }
+        @if (ViewBag.EditProfile == true)
+        {
+            <div class="alert alert-warning">
+
+                be dalil EditPRofile Dobare Login Konid
+                </div>
+        }
         <header><h2> ورود به سایت </h2></header>
 
         <div class="form-layer">

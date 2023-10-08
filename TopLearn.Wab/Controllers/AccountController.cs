@@ -209,7 +209,7 @@ namespace TopLearn.Wab.Controllers
             if (!ModelState.IsValid)
                 return View(reset);
 
-            DataLayeer.Entities.User.User user = _userService.GetUserByActiceCode(reset.ActiveCode);
+            DataLayeer.Entities.User.User user = _userService.GetUserByActiveCode(reset.ActiveCode);
 
             if (user == null)
                 return NotFound();
