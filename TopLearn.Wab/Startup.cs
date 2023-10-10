@@ -77,22 +77,24 @@ namespace TopLearn.Wab
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseRouting();
             app.UseStaticFiles();
             app.UseAuthentication();
-       
-            app.UserMvc(routes =>
+            app.UseCors();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                name: "areas",
-                template: "{area:exists}/{controller=Home}/{action=Index}/{id}"
-                );
-                routes.MapRoute("Default", "{ controller = Home}/{ action = Index}/{ id}");
+                endpoints.MapControllerRoute(
+                     name: "areas",
+                     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                   );
+
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
         }
     }
 }

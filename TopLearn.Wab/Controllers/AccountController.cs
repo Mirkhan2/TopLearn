@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-
 using Microsoft.AspNetCore.Mvc;
 using TopLearn.Core.Convertor;
-
 using TopLearn.Core.DTOs;
 using TopLearn.Core.Generator;
 using TopLearn.Core.Security;
@@ -30,10 +25,6 @@ namespace TopLearn.Wab.Controllers
             _userService = userService;
             _viewRender = viewRender;
         }
-
-
-
-
 
         #region Register
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TopLearn.Core.DTOs;
 using TopLearn.DataLayeer.Entities;
 using TopLearn.DataLayeer.Entities.User;
+using TopLearn.DataLayeer.Entities.Wallet;
 
 namespace TopLearn.Core.Services.Interfaces
 {
@@ -22,6 +23,7 @@ namespace TopLearn.Core.Services.Interfaces
      
         void UpdateUser(User user);
         bool ActiveAccount(string activeCode);
+        int GetUserIdByUserName(string userName);
         #region User Panel
         InformationUserViewModel GetUSerInformation(string username);
         SideBarUserPanelViewModel GetSideBarUserPanelData(string username);
@@ -30,6 +32,13 @@ namespace TopLearn.Core.Services.Interfaces
         bool CompareOldPassword(string oldPassword , string username);
         void ChangeUserPassword(string userName , string newPassword);
         #endregion
+        #region
 
+        int BalanceUserWallet(string userName);
+        List<WalletViewModel> GetWalletUser(string userName);
+        void ChargeWallet(string userName , int amount ,string description , bool isPay=false);
+        void AddWallet(Wallet wallet);
+
+        #endregion
     }
 }

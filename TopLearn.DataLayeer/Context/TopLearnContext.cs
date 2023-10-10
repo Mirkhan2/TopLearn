@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TopLearn.DataLayeer.Entities.User;
+using TopLearn.DataLayeer.Entities.Wallet;
 
 namespace TopLearn.DataLayeer.Context
 {
@@ -25,6 +26,12 @@ namespace TopLearn.DataLayeer.Context
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<User> Users { get; set; }
 		public DbSet<UserRole> UserRoles { get; set; }
-		#endregion
-	}
+        #endregion
+        #region Wallet
+        public DbSet<WalletType> WalletTypes { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
+
+
+        #endregion
+    }
 }

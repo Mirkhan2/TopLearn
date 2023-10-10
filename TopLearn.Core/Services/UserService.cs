@@ -10,9 +10,9 @@ using TopLearn.Core.Security;
 using TopLearn.Core.Services.Interfaces;
 using TopLearn.DataLayeer.Context;
 using TopLearn.DataLayeer.Entities.User;
-using TopLearn.DataLayeer.Context;
-using TopLearn.DataLayeer.Entities.User;
+
 using System.IO;
+using TopLearn.DataLayeer.Entities.Wallet;
 
 namespace TopLearn.Core.Services
 {
@@ -85,14 +85,19 @@ namespace TopLearn.Core.Services
             return true;
         }
 
-        public InformationUserViewModel  GetUSerInformation(string username)
+        public int GetUserIdByUserName(string userName)
+        {
+            return _context.Users.Single(u => u.UserName == userName).UserId;
+        }
+
+        public InformationUserViewModel GetUSerInformation(string username)
         {
             var user = GetUserByUserName(username);
             InformationUserViewModel information = new InformationUserViewModel();
             information.UserName = user.UserName;
             information.Email = user.Email;
             information.RegisterDate = user.RegisterDate;
-            information.Wallet = 0;
+            information.Wallet = 1;
 
             return information;
 
@@ -153,7 +158,7 @@ namespace TopLearn.Core.Services
 
         public bool CompareOldPassword(string oldPassword, string username)
         {
-         
+
             string hashOldPassword = PasswordHelper.EncodePasswordMd5(oldPassword);
             return _context.Users.Any(u => u.UserName == username && u.Password == hashOldPassword);
 
@@ -161,9 +166,63 @@ namespace TopLearn.Core.Services
 
         public void ChangeUserPassword(string userName, string newPassword)
         {
-           var user = GetUserByUserName(userName);
+            var user = GetUserByUserName(userName);
             user.Password = PasswordHelper.EncodePasswordMd5(newPassword);
             UpdateUser(user);
         }
-    }
+
+        public int BalanceUserWallet(string userName)
+        {
+            int userId = GetUserIdByUserName(userName);
+
+            var enter = _context.Wallets
+                .Where(w => w.UserId ==userId && w.TypeId == 1&&w.IsPay)
+                .Select(w =>w.Amount).ToList();
+
+            var exit = _context.Wallets
+              .Where(w => w.UserId == userId && w.TypeId == 2)
+              .Select(w => w.Amount).ToList();
+
+            return (enter.Sum() - exit.Sum());
+        }
+
+        public List<WalletViewModel> GetWalletUser(string userName)
+        {
+            int userId = GetUserIdByUserName(userName);
+
+            return _context.Wallets
+                .Where(w => w.IsPay && w.UserId == userId)
+                .Select(w => new WalletViewModel()
+                {
+                    Amount = w.Amount,
+                    DateTime = w.CreateDate,
+                    Description = w.Description,
+                    Type = w.TypeId
+                })
+                .ToList();
+        }
+
+        public void ChargeWallet(string userName, int amount, string description, bool isPay = false)
+        {
+            Wallet wallet = new Wallet()
+            {
+                Amount = amount,
+                CreateDate = DateTime.Now,
+                Description = description,
+                IsPay = isPay,
+                TypeId = 1,
+                UserId  = GetUserIdByUserName(userName )
+
+            };
+            AddWallet(wallet);
+
+        }
+
+
+        public void AddWallet(Wallet wallet)
+        {
+            _context.Wallets.Add(wallet);
+            _context.SaveChanges();
+        }
+    }  
 }

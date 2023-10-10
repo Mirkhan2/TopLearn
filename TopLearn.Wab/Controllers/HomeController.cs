@@ -10,7 +10,10 @@ namespace TopLearn.Wab.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index() => View();
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         [Authorize]
         public IActionResult Test() => View();
