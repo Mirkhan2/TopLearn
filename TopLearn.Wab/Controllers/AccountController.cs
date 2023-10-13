@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using TopLearn.Core.Convertor;
-using TopLearn.Core.DTOs;
+using TopLearn.Core.DTOs.Users;
 using TopLearn.Core.Generator;
 using TopLearn.Core.Security;
 using TopLearn.Core.Senders;

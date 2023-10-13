@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TopLearn.Core.Convertor;
-
-using TopLearn.Core.DTOs;
 using TopLearn.Core.Generator;
 using TopLearn.Core.Security;
 using TopLearn.Core.Services.Interfaces;
@@ -13,6 +11,7 @@ using TopLearn.DataLayeer.Entities.User;
 
 using System.IO;
 using TopLearn.DataLayeer.Entities.Wallet;
+using TopLearn.Core.DTOs.Users;
 
 namespace TopLearn.Core.Services
 {

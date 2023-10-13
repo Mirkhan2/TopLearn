@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TopLearn.Core.DTOs;
+using TopLearn.Core.DTOs.Users;
 using TopLearn.Core.Services.Interfaces;
 
 namespace TopLearn.Wab.Areas.UserPanel.Controllers
-{ [Area("UserPanel")]
+{
+    [Area("UserPanel")]
     [Authorize]
     public class HomeController : Controller
     {

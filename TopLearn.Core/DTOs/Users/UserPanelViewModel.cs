@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace TopLearn.Core.DTOs
+namespace TopLearn.Core.DTOs.Users
 {
     public class InformationUserViewModel
     {

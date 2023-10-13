@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TopLearn.Core.DTOs;
+using TopLearn.Core.DTOs.Users;
 using TopLearn.DataLayeer.Entities;
 using TopLearn.DataLayeer.Entities.User;
 using TopLearn.DataLayeer.Entities.Wallet;
