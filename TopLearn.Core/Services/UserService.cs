@@ -12,11 +12,12 @@ using TopLearn.DataLayeer.Entities.User;
 using System.IO;
 using TopLearn.DataLayeer.Entities.Wallet;
 using TopLearn.Core.DTOs.Users;
+using TopLearn.Core.DTOs;
 
 namespace TopLearn.Core.Services
 {
 
-    public class UserService : IUserService
+	public class UserService : IUserService
     {
         private TopLearnContext _context;
 
@@ -234,6 +235,49 @@ namespace TopLearn.Core.Services
         {
           _context.Wallets.Update(wallet);
             _context.SaveChanges();
+        }
+
+		public UserForAdminViewModel GetUsers(int pageId = 1, string filterEmail = "", string filterUserName = "")
+		{
+            IQueryable<User> result = _context.Users;
+            if (!string.IsNullOrEmpty(filterEmail))
+            {
+                result=result.Where(u => u.Email.Contains(filterEmail));
+
+            }
+            if (!string.IsNullOrEmpty(filterUserName))
+            {
+                result = result.Where(u => u.UserName.Contains(filterUserName));
+            }
+            //show Item In Page
+            int take = 20;
+            int skip = (pageId-1) * take;
+
+			UserForAdminViewModel list = new UserForAdminViewModel();
+            list.CurrentPage = pageId;
+            list.PageCount = result.Count() / take;
+            list.Users = result.OrderBy( u => u.RegisterDate).Skip(skip).Take(take).ToList();
+
+
+            return list;
+		}
+
+        public int AddUserFromAdmin(CreateUserViewModel user)
+        {
+            User  addUser = new User();
+            user.Password = PasswordHelper.EncodePasswordMd5(user.Password);
+            if (user.UserAvatar != null)
+            {
+                string imagePath = "";
+            
+
+                addUser.UserAvatar = NameGenerator.GenerateUniqCode() + Path.GetExtension(user.UserAvatar.FileName);
+                imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UserAvatar", user.UserName);
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    user.UserAvatar.CopyTo(stream);
+                }
+            }
         }
     }  
 }

@@ -34,6 +34,6 @@ namespace TopLearn.Core.DTOs
 
 		public IFormFile UserAvatar { get; set; }
 
-		//public List<int> SelectedRoles { get; set; }
+		public List<int> SelectedRoles { get; set; }
 	}  
 }

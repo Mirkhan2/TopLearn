@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TopLearn.Core.DTOs;
 using TopLearn.Core.DTOs.Users;
 using TopLearn.DataLayeer.Entities;
 using TopLearn.DataLayeer.Entities.User;
@@ -40,8 +41,15 @@ namespace TopLearn.Core.Services.Interfaces
         int ChargeWallet(string userName , int amount ,string description , bool isPay=false);
         int AddWallet(Wallet wallet);
         Wallet GetWalletByWalletId(int walletId);
-        void UpdateWallet(Wallet wallet);   
+        void UpdateWallet(Wallet wallet);
 
-        #endregion 
-    }
+		#endregion
+
+		#region Admin Panel
+
+		UserForAdminViewModel GetUsers(int pageId =1, string filterEmail = "" , string filterUserName = "");
+        int AddUserFromAdmin(CreateUserViewModel user);
+
+		#endregion
+	}
 }
