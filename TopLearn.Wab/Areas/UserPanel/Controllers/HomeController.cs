@@ -39,7 +39,7 @@ namespace TopLearn.Wab.Areas.UserPanel.Controllers
             if (!ModelState.IsValid)
                 return View(profile);
 
-            _userService.EditProfile(User.Identity.Name,profile);
+            _userService.EditProfile(User.Identity.Name, profile);
 
             //Log Out User
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -66,16 +66,17 @@ namespace TopLearn.Wab.Areas.UserPanel.Controllers
 
             if (!_userService.CompareOldPassword(change.OldPassword, currentUserName))
             {
-                ModelState.AddModelError("OldPassword","کلمه عبور فعلی صحیح نمیباشد");
+                ModelState.AddModelError("OldPassword", "کلمه عبور فعلی صحیح نمیباشد");
                 return View(change);
             }
 
-            _userService.ChangeUserPassword(currentUserName,change.Password);
+            _userService.ChangeUserPassword(currentUserName, change.Password);
             ViewBag.IsSuccess = true;
 
             return View();
         }
 
-      
+
+
     }
 }

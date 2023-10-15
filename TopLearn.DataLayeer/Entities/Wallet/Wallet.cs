@@ -44,7 +44,5 @@ namespace TopLearn.DataLayeer.Entities.Wallet
         public virtual WalletType WalletType { get; set; }
 
 
-
-
     }
 }
