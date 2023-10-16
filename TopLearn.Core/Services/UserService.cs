@@ -8,10 +8,8 @@ using TopLearn.Core.Security;
 using TopLearn.Core.Services.Interfaces;
 using TopLearn.DataLayeer.Context;
 using TopLearn.DataLayeer.Entities.User;
-
 using System.IO;
 using TopLearn.DataLayeer.Entities.Wallet;
-using TopLearn.Core.DTOs.Users;
 using TopLearn.Core.DTOs;
 
 namespace TopLearn.Core.Services

@@ -19,4 +19,8 @@
     <ProjectReference Include="..\TopLearn.DataLayeer\TopLearn.DataLayeer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+  </ItemGroup>
+
 </Project>
