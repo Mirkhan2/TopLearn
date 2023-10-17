@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,13 +62,11 @@ namespace TopLearn.Wab
             #endregion
 
             #region IoC
-            
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IViewRenderService, RenderViewToString>();
-            services.AddTransient<IPermissionService, PermissionService>(); 
+            services.AddTransient<IPermissionService, PermissionService>();
 
-            
             #endregion
         }
 
@@ -78,24 +77,23 @@ namespace TopLearn.Wab
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseRouting();
             app.UseStaticFiles();
             app.UseAuthentication();
-            app.UseCors();
-            app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                     name: "areas",
-                     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-                   );
+            app.UseMvc(routes =>
+            {   
+                routes.MapRoute(
+                    name: "areas",
+                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
 
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                );
+                routes.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
             });
 
+            app.Run(async (context) =>
+            {
+                await context.Response.WriteAsync("Hello World!");
+            });
         }
     }
 }

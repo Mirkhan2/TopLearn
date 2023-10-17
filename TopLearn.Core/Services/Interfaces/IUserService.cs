@@ -26,8 +26,10 @@ namespace TopLearn.Core.Services.Interfaces
         void UpdateUser(User user);
         bool ActiveAccount(string activeCode);
         int GetUserIdByUserName(string userName);
+        void DeleteUser(int  userId);
         #region User Panel
         InformationUserViewModel GetUSerInformation(string username);
+        InformationUserViewModel GetUserInformation(int userId);
         SideBarUserPanelViewModel GetSideBarUserPanelData(string username);
         EditProfileViewModel GetDataForEditProfileUser(string username);
         void EditProfile(string username,EditProfileViewModel profile);
@@ -49,6 +51,8 @@ namespace TopLearn.Core.Services.Interfaces
 		#region Admin Panel
 
 		UserForAdminViewModel GetUsers(int pageId =1, string filterEmail = "" , string filterUserName = "");
+        UserForAdminViewModel GetDeleteUsers(int pageId = 1, string filterEmail = "", string filterUserName = "");
+
         int AddUserFromAdmin(CreateUserViewModel user);
         EditUserViewModel GetUserForShowInEditMode(int userId);
         void EditUSerFromAdmin(EditUserViewModel editUser);

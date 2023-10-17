@@ -1,8 +1,8 @@
 ﻿@using TopLearn.Core.Convertor
 @using TopLearn.Core.DTOs
-
 @using TopLearn.Core.Services.Interfaces
 @inject IUserService _UserService
+@inject IPermissionService _permissionService
 
 @{
 	SideBarUserPanelViewModel user = _UserService.GetSideBarUserPanelData(User.Identity.Name);

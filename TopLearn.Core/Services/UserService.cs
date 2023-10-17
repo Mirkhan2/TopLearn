@@ -11,6 +11,7 @@ using TopLearn.DataLayeer.Entities.User;
 using System.IO;
 using TopLearn.DataLayeer.Entities.Wallet;
 using TopLearn.Core.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace TopLearn.Core.Services
 {
@@ -95,7 +96,7 @@ namespace TopLearn.Core.Services
             information.UserName = user.UserName;
             information.Email = user.Email;
             information.RegisterDate = user.RegisterDate;
-            information.Wallet = 1;
+            information.Wallet = BalanceUserWallet(username);
 
             return information;
 
@@ -337,13 +338,58 @@ namespace TopLearn.Core.Services
         }
 	
 
-	
-
-
-
         public User GetUserById(int userId)
         {
             return _context.Users.Find(userId);
+        }
+
+        public UserForAdminViewModel GetDeleteUsers(int pageId = 1, string filterEmail = "", string filterUserName = "")
+        {
+            IQueryable<User> result = _context.Users.IgnoreQueryFilters().Where(u => u.IsDelete);
+            if (!string.IsNullOrEmpty(filterEmail))
+            {
+                result = result.Where(u => u.Email.Contains(filterEmail));
+
+            }
+            if (!string.IsNullOrEmpty(filterUserName))
+            {
+                result = result.Where(u => u.UserName.Contains(filterUserName));
+            }
+            //show Item In Page
+            int take = 20;
+            int skip = (pageId - 1) * take;
+
+            UserForAdminViewModel list = new UserForAdminViewModel();
+            list.CurrentPage = pageId;
+            list.PageCount = result.Count() / take;
+
+            list.Users = result.OrderBy(u => u.RegisterDate).Skip(skip).Take(take).ToList();
+
+
+            return list;
+        }
+
+        public void DeleteUser(int userId)
+        {
+            User user = GetUserById(userId);
+            user.IsDelete = true;
+            UpdateUser(user);
+        }
+
+        public InformationUserViewModel GetUserInformation(int userId)
+        {
+           
+                var user = GetUserById(userId);
+                InformationUserViewModel information = new InformationUserViewModel();
+                information.UserName = user.UserName;
+                information.Email = user.Email;
+                information.RegisterDate = user.RegisterDate;
+                information.Wallet = BalanceUserWallet(user.UserName);
+
+                return information;
+
+            
+
         }
     }
 }

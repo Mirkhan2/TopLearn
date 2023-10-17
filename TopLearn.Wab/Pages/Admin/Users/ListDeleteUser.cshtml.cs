@@ -5,19 +5,20 @@ using TopLearn.Core.Services.Interfaces;
 
 namespace TopLearn.Wab.Pages.Admin.Users
 {
-    public class IndexModel : PageModel
+    public class ListDeleteUsersModel : PageModel
     {
-       private IUserService _userService;
-        public IndexModel(IUserService userService)
+        private IUserService _userService;
+        public ListDeleteUsersModel(IUserService userService)
         {
             _userService = userService;
         }
 
         public UserForAdminViewModel UserForAdminViewModel { get; set; }
-        public void OnGet(int pageId = 1 ,string filterUserName = "",string filterEmail = "")
+
+        public void OnGet(int pageId = 1, string filterUserName = "", string filterEmail = "")
         {
-            UserForAdminViewModel = _userService.GetUsers(pageId,filterEmail,filterUserName);
+            UserForAdminViewModel = _userService.GetDeleteUsers(pageId, filterEmail, filterUserName);
         }
-       
+
     }
 }

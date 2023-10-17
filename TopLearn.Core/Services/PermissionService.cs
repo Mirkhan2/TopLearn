@@ -46,5 +46,29 @@ namespace TopLearn.Core.Services.Interfaces
             //Add NEw ROles
             AddRolesToUser(roleIds, userId);
         }
+
+        public int AddRole(Role role)
+        {
+            _context.Roles.Add(role);
+            _context.SaveChanges();
+            return role.RoleId;
+        }
+
+		public Role GetRoleById(int roleId)
+		{
+            return _context.Roles.Find(roleId);
+		}
+
+        public void UpdateRole(Role role)
+        {
+          _context.Roles.Update(role);
+            _context.SaveChanges();
+        }
+
+        public void DeleteRole(Role role)
+        {
+           role.IsDelete = true;
+            UpdateRole(role);
+        }
     }
 }
