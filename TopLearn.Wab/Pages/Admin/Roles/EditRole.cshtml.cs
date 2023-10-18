@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TopLearn.Core.Services.Interfaces;
@@ -17,16 +18,19 @@ namespace TopLearn.Wab.Pages.Admin.Roles
         public void OnGet(int id)
         {
             Role = _permissionService.GetRoleById(id);
+            ViewData["Permissions"] = _permissionService.GetAllPermissions();
+            ViewData["SelectedPermissions"] = _permissionService.PermissionsRole(id);
 
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPost(List<int> SelectedPermission)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
                 _permissionService.UpdateRole(Role);
+            _permissionService.UpdatePermissionsRole(Role.RoleId, SelectedPermission);
 
                 return RedirectToPage("Index");
             

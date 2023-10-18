@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TopLearn.DataLayeer.Entities.Permission;
 
 namespace TopLearn.DataLayeer.Entities.User
 {
@@ -26,12 +27,12 @@ namespace TopLearn.DataLayeer.Entities.User
 
         public bool IsDelete { get; set; }
 
+		#region Relations
 
-        #region Relations
+		public virtual List<UserRole> UserRoles { get; set; }
+		public List<RolePermission> RolePermissions { get; set; }
 
-        public virtual List<UserRole> UserRoles { get; set; }
 
-
-        #endregion
-    }
+		#endregion
+	}
 }
