@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using TopLearn.DataLayeer.Entities.Course;
 using TopLearn.DataLayeer.Entities.Permission;
 using TopLearn.DataLayeer.Entities.User;
 using TopLearn.DataLayeer.Entities.Wallet;
@@ -43,12 +44,24 @@ namespace TopLearn.DataLayeer.Context
 
         #endregion
 
+        #region Course
+
+        public DbSet<CourseGroup> CourseGroups { get; set; }
+        public DbSet<CourseLevel> CourseLevels { get; set; }
+        public DbSet<CourseStatus> CourseStatuses { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<CourseEpisode> CourseEpisodes { get; set; }
+        #endregion
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
                 .HasQueryFilter(u => !u.IsDelete);
             modelBuilder.Entity<Role>()
                 .HasQueryFilter(r => !r.IsDelete);
+
+            modelBuilder.Entity<CourseGroup>()
+                .HasQueryFilter(g =>!g.IsDelete);
 
             base.OnModelCreating(modelBuilder);
         }

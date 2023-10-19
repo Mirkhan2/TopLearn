@@ -10,7 +10,7 @@ using TopLearn.DataLayeer.Entities.User;
 namespace TopLearn.Wab.Pages.Admin.Roles
 {
     
-    [PermissionChecker(1002)]
+    [PermissionChecker(6)]
     public class IndexModel : PageModel
     {
       IPermissionService _permissionService;

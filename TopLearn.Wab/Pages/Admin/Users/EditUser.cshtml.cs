@@ -2,10 +2,13 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TopLearn.Core.DTOs;
+using TopLearn.Core.Security;
 using TopLearn.Core.Services.Interfaces;
 
 namespace TopLearn.Wab.Pages.Admin.Users
 {
+    [PermissionChecker(4)]
+
     public class EditUserModel : PageModel
     {
         private IUserService _userService;
