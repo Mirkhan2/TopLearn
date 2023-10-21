@@ -51,17 +51,32 @@ namespace TopLearn.DataLayeer.Context
         public DbSet<CourseStatus> CourseStatuses { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<CourseEpisode> CourseEpisodes { get; set; }
+
+
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
                 .HasQueryFilter(u => !u.IsDelete);
+
             modelBuilder.Entity<Role>()
                 .HasQueryFilter(r => !r.IsDelete);
 
             modelBuilder.Entity<CourseGroup>()
-                .HasQueryFilter(g =>!g.IsDelete);
+                .HasQueryFilter(g => !g.IsDelete);
+            modelBuilder.Entity<Course>()
+               .HasQueryFilter(g => !g.IsDelete);
+
+            modelBuilder.Entity<Course>()
+                .HasOne<CourseGroup>(c => c.CourseGroup)
+                .WithMany(cg => cg.Courses)
+                .HasForeignKey(fk => fk.GroupId);
+
+            modelBuilder.Entity<Course>()
+                .HasOne<CourseGroup>(c => c.Group)
+                .WithMany(cg => cg.SubGroup)
+                .HasForeignKey(fk => fk.SubGroup);
 
             base.OnModelCreating(modelBuilder);
         }

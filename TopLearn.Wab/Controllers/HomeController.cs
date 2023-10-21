@@ -5,13 +5,20 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using TopLearn.Core.Services.Interfaces;
 
 namespace TopLearn.Wab.Controllers
 {
     public class HomeController : Controller
     {
-      private  IUserService _userService;
+        private IUserService _userService;
+        private ICourseService _courseService;
+        public HomeController(ICourseService courseService)
+        {
+            _courseService = courseService;
+        }
+
 
         public HomeController(IUserService userService)
         {
@@ -49,6 +56,18 @@ namespace TopLearn.Wab.Controllers
             }
 
             return View();
+        }
+        public IActionResult GetSubGroups(int id)
+        {
+            List<SelectListItem> list = new List<SelectListItem>()
+            {
+                new SelectListItem() { Text = "انتخاب کنید", Value = "" }
+
+            };
+
+            list.AddRange ( _courseService.GetSubGroupForManageCourse(id));
+            return Json(new SelectList(list, "Value", "Text"));
+
         }
 
     }
