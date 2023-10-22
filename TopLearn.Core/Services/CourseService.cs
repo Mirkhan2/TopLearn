@@ -21,9 +21,75 @@ namespace TopLearn.Core.Services
     public class CourseService : ICourseService
     {
         private TopLearnContext _context;
+
         public CourseService(TopLearnContext context)
         {
             _context = context;
+        }
+
+        public List<CourseGroup> GetAllGroup()
+        {
+            return _context.CourseGroups.ToList();
+        }
+
+        public List<SelectListItem> GetGroupForManageCourse()
+        {
+            return _context.CourseGroups.Where(g => g.ParentId == null)
+                .Select(g => new SelectListItem()
+                {
+                    Text = g.GroupTitle,
+                    Value = g.GroupId.ToString()
+                }).ToList();
+        }
+
+        public List<SelectListItem> GetSubGroupForManageCourse(int groupId)
+        {
+            return _context.CourseGroups.Where(g => g.ParentId == groupId)
+                .Select(g => new SelectListItem()
+                {
+                    Text = g.GroupTitle,
+                    Value = g.GroupId.ToString()
+                }).ToList();
+        }
+
+        public List<SelectListItem> GetTeachers()
+        {
+            return _context.UserRoles.Where(r => r.RoleId == 2).Include(r => r.User)
+                .Select(u => new SelectListItem()
+                {
+                    Value = u.UserId.ToString(),
+                    Text = u.User.UserName
+                }).ToList();
+        }
+
+        public List<SelectListItem> GetLevels()
+        {
+            return _context.CourseLevels.Select(l => new SelectListItem()
+            {
+                Value = l.LevelId.ToString(),
+                Text = l.LevelTitle
+            }).ToList();
+
+        }
+
+        public List<SelectListItem> GetStatues()
+        {
+            return _context.CourseStatuses.Select(s => new SelectListItem()
+            {
+                Value = s.StatusId.ToString(),
+                Text = s.StatusTitle
+            }).ToList();
+        }
+
+        public List<ShowCourseForAdminViewModel> GetCoursesForAdmin()
+        {
+            return _context.Courses.Select(c => new ShowCourseForAdminViewModel()
+            {
+                CourseId = c.CourseId,
+                ImageName = c.CourseImageName,
+                Title = c.CourseTitle,
+                EpisodeCount = c.CourseEpisodes.Count
+            }).ToList();
         }
 
         public int AddCourse(Course course, IFormFile imgCourse, IFormFile courseDemo)
@@ -40,12 +106,13 @@ namespace TopLearn.Core.Services
                 {
                     imgCourse.CopyTo(stream);
                 }
+
                 ImageConvertor imgResizer = new ImageConvertor();
                 string thumbPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/course/thumb", course.CourseImageName);
 
-                imgResizer.Image_resize(imagePath , thumbPath ,150);
-
+                imgResizer.Image_resize(imagePath, thumbPath, 150);
             }
+
             if (courseDemo != null)
             {
                 course.DemoFileName = NameGenerator.GenerateUniqCode() + Path.GetExtension(courseDemo.FileName);
@@ -54,80 +121,78 @@ namespace TopLearn.Core.Services
                 {
                     courseDemo.CopyTo(stream);
                 }
-
             }
 
             _context.Add(course);
             _context.SaveChanges();
-            return course.CourseId;
 
+            return course.CourseId;
         }
 
-        public List<CourseGroup> GetAllGroup()
+        public Course GetCourseById(int courseId)
         {
-            return _context.CourseGroups.ToList();
+            return _context.Courses.Find(courseId);
+        }
+
+        public void UpdateCourse(Course course, IFormFile imgCourse, IFormFile courseDemo)
+        {
+            course.UpdateDate = DateTime.Now;
+
+            if (imgCourse != null && imgCourse.IsImage())
+            {
+                if (course.CourseImageName != "no-photo.jpg")
+                {
+                    string deleteimagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/course/image", course.CourseImageName);
+                    if (File.Exists(deleteimagePath))
+                    {
+                        File.Delete(deleteimagePath);
+                    }
+
+                    string deletethumbPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/course/thumb", course.CourseImageName);
+                    if (File.Exists(deletethumbPath))
+                    {
+                        File.Delete(deletethumbPath);
+                    }
+                }
+                course.CourseImageName = NameGenerator.GenerateUniqCode() + Path.GetExtension(imgCourse.FileName);
+                string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/course/image", course.CourseImageName);
+
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    imgCourse.CopyTo(stream);
+                }
+
+                ImageConvertor imgResizer = new ImageConvertor();
+                string thumbPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/course/thumb", course.CourseImageName);
+
+                imgResizer.Image_resize(imagePath, thumbPath, 150);
+            }
+
+            if (courseDemo != null)
+            {
+                if (course.DemoFileName != null)
+                {
+                    string deleteDemoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/course/demoes", course.DemoFileName);
+                    if (File.Exists(deleteDemoPath))
+                    {
+                        File.Delete(deleteDemoPath);
+                    }
+                }
+                course.DemoFileName = NameGenerator.GenerateUniqCode() + Path.GetExtension(courseDemo.FileName);
+                string demoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/course/demoes", course.DemoFileName);
+                using (var stream = new FileStream(demoPath, FileMode.Create))
+                {
+                    courseDemo.CopyTo(stream);
+                }
+            }
+
+            _context.Courses.Update(course);
+            _context.SaveChanges();
         }
 
         public List<ShowCourseForAdminViewModel> GetCourseForAdmin()
         {
-           return _context.Courses.Select(c=> new ShowCourseForAdminViewModel()
-           {
-               CourseId = c.CourseId,
-               ImageName = c.CourseImageName,
-               Title = c.CourseTitle,
-               EpisodeCount = c.CourseEpisodes.Count,
-           }).ToList();
-        }
-
-        public List<SelectListItem> GetGroupForManageCourse()
-        {
-            return _context.CourseGroups.Where(g => g.ParentId == null)
-                 .Select(g => new SelectListItem()
-                 {
-                     Text = g.GroupTitle,
-                     Value = g.GroupId.ToString(),
-
-                 }).ToList();
-        }
-
-        public List<SelectListItem> GetLevels()
-        {
-            return _context.CourseLevels.Select(l => new SelectListItem()
-            {
-                Value = l.LevelId.ToString(),
-                Text = l.LevelTitle
-            }).ToList();
-        }
-
-        public List<SelectListItem> GetStatues()
-        {
-            return _context.CourseStatuses.Select(l => new SelectListItem()
-            {
-                Value = l.StatusId.ToString(),
-                Text = l.StatusTitle
-            }).ToList();
-
-        }
-
-        public List<SelectListItem> GetSubGroupForManageCourse(int groupId)
-        {
-            return _context.CourseGroups.Where(g => g.ParentId == groupId)
-                .Select(g => new SelectListItem()
-                {
-                    Text = g.GroupTitle,
-                    Value = g.GroupId.ToString(),
-                }).ToList();
-        }
-
-        public List<SelectListItem> GetTeachers()
-        {
-            return _context.UserRoles.Where(r => r.RoleId == 2).Include(r => r.User)
-                .Select(u => new SelectListItem()
-                {
-                    Value = u.UserId.ToString(),
-                    Text = u.User.UserName
-
-                }).ToList();
+            throw new NotImplementedException();
         }
     }
 }

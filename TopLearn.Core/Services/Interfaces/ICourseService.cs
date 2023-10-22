@@ -22,12 +22,16 @@ namespace TopLearn.Core.Services.Interfaces
 
 
         #endregion
-        #region
+
+        #region Course  
 
         List<ShowCourseForAdminViewModel> GetCourseForAdmin();
         
 
         int AddCourse(Course course , IFormFile imgCourse , IFormFile courseDemo);   
+        Course GetCourseById(int courseid);
+        void UpdateCourse(Course course , IFormFile imgCourse , IFormFile courseDemo);
+
 
         #endregion
     }
