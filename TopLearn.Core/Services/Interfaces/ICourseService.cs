@@ -31,7 +31,18 @@ namespace TopLearn.Core.Services.Interfaces
         int AddCourse(Course course , IFormFile imgCourse , IFormFile courseDemo);   
         Course GetCourseById(int courseid);
         void UpdateCourse(Course course , IFormFile imgCourse , IFormFile courseDemo);
+        List<ShowCourseListItemViewModel> GetCourse(int pageId = 1 ,
+            string  filter ="", string getType ="all" ,string orderByType = "date",
+            int startPrice= 0 , int endPrice=0 ,List<int> selectedGroups = null , int take = 0);
 
+        #endregion
+
+        #region Episode
+        List<CourseEpisode> GetListEpisodeCourse(int courseId);
+        bool CheckExistFile(string fileName);
+        int AddEpisode(CourseEpisode episode , IFormFile episodeFile);
+        CourseEpisode GetEpisodeById(int episodeId);
+        void EditEpisode(CourseEpisode episode, IFormFile episodeFile);
 
         #endregion
     }

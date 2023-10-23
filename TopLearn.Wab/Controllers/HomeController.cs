@@ -26,7 +26,7 @@ namespace TopLearn.Wab.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            return View(_courseService.GetCourse());
         }
 
         [Authorize]

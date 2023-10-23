@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\AdminContent\" />
+    <Folder Include="wwwroot\courseFiles\" />
   </ItemGroup>
 
 </Project>

@@ -81,17 +81,6 @@ namespace TopLearn.Core.Services
             }).ToList();
         }
 
-        public List<ShowCourseForAdminViewModel> GetCoursesForAdmin()
-        {
-            return _context.Courses.Select(c => new ShowCourseForAdminViewModel()
-            {
-                CourseId = c.CourseId,
-                ImageName = c.CourseImageName,
-                Title = c.CourseTitle,
-                EpisodeCount = c.CourseEpisodes.Count
-            }).ToList();
-        }
-
         public int AddCourse(Course course, IFormFile imgCourse, IFormFile courseDemo)
         {
             course.CreateDate = DateTime.Now;
@@ -192,7 +181,135 @@ namespace TopLearn.Core.Services
 
         public List<ShowCourseForAdminViewModel> GetCourseForAdmin()
         {
-            throw new NotImplementedException();
+            return _context.Courses.Select(c => new ShowCourseForAdminViewModel()
+            {
+                CourseId = c.CourseId,
+                ImageName = c.CourseImageName,
+                Title = c.CourseTitle,
+                EpisodeCount = c.CourseEpisodes.Count
+            }).ToList();
         }
+
+
+
+        public int AddEpisode(CourseEpisode episode, IFormFile episodeFile)
+        {
+            episode.EpisodeFileName = episodeFile.FileName;
+
+
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/course/courseFiles", episode.EpisodeFileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                episodeFile.CopyTo(stream);
+            }
+
+
+            _context.CourseEpisodes.Add(episode);
+            _context.SaveChanges();
+            return episode.EpisodeId;
+        }
+
+        public bool CheckExistFile(string fileName)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/courseFiles", fileName);
+            return File.Exists(path);
+        }
+
+        public List<CourseEpisode> GetListEpisodeCourse(int courseId)
+        {
+            return _context.CourseEpisodes.Where(e => e.CourseId == courseId).ToList();
+        }
+
+        public CourseEpisode GetEpisodeById(int episodeId)
+        {
+            return _context.CourseEpisodes.Find(episodeId);
+        }
+
+        public void EditEpisode(CourseEpisode episode, IFormFile episodeFile)
+        {
+            if (episodeFile != null)
+            {
+                string deleteFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/courseFiles", episode.EpisodeFileName);
+                File.Delete(deleteFilePath);
+
+                episode.EpisodeFileName = episodeFile.FileName;
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/courseFiles", episode.EpisodeFileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    episodeFile.CopyTo(stream);
+                }
+            }
+
+            _context.CourseEpisodes.Update(episode);
+            _context.SaveChanges();
+        }
+
+        public List<ShowCourseListItemViewModel> GetCourse(int pageId = 1, string filter = ""
+            , string getType = "all", string orderByType = "date", int startPrice = 0,
+            int endPrice = 0, List<int> selectedGroups = null, int take = 0)
+        {
+
+            if (take == 0)
+            {
+                take = 8;
+            }
+            IQueryable<Course> result = _context.Courses;
+            // var result = _context.Courses;
+            if (!string.IsNullOrEmpty(filter))
+            {
+                result = result.Where(c => c.CourseTitle.Contains(filter));
+            }
+            switch (getType)
+            {
+                case "all":
+                    break;
+                case "buy":
+                    {
+                        result = result.Where(c => c.CoursePrice != 0);
+                        break;
+                    }
+                case "free":
+                    {
+                        result = result.Where(c => c.CoursePrice == 0);
+                        break;
+                    }
+            }
+            switch (oderByType)
+            {
+                case "date":
+                    {
+                        result = result.OrderByDescending(c => c.CreateDate);
+                        break;
+                    }
+                case "updatedate":
+                    {
+                        result = result.OrderByDescending(c => c.UpdateDate);
+                        break;
+                    }
+            }
+            if (startPrice > 0)
+            {
+                result = result.Where(c => c.CoursePrice > startPrice);
+            }
+            if (startPrice > 0)
+            {
+                result = result.Where(c => c.CoursePrice > startPrice);
+            }
+            if (selectedGroups! = null && selectedGroups.Any())
+            {
+
+            }
+            int skip = (pageId - 1) * take;
+
+            return result.Include(c => c.CourseEpisodes).Select(c => new ShowCourseListItemViewModel()
+            {
+                CourseId = c.CourseId,
+                ImageName = c.CourseImageName,
+                Price = c.CoursePrice,
+                TotalTime = new TimeSpan(c.CourseEpisodes.Sum(e => e.EpisodeTime.Ticks))
+           }).Skip(skip).Take(take).ToList();
     }
+
+}
+}
 }
