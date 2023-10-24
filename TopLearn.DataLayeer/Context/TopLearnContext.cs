@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TopLearn.DataLayeer.Entities.Course;
+using TopLearn.DataLayeer.Entities.Order;
 using TopLearn.DataLayeer.Entities.Permission;
 using TopLearn.DataLayeer.Entities.User;
 using TopLearn.DataLayeer.Entities.Wallet;
@@ -55,8 +57,15 @@ namespace TopLearn.DataLayeer.Context
 
         #endregion
 
+        #region Order
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+
+        #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            
             modelBuilder.Entity<User>()
                 .HasQueryFilter(u => !u.IsDelete);
 

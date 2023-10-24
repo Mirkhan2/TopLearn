@@ -244,7 +244,7 @@ namespace TopLearn.Core.Services
             _context.SaveChanges();
         }
 
-        public List<ShowCourseListItemViewModel> GetCourse(int pageId = 1, string filter = ""
+        public Tuple<List<ShowCourseListItemViewModel>, int> GetCourse(int pageId = 1, string filter = ""
             , string getType = "all", string orderByType = "date", int startPrice = 0,
             int endPrice = 0, List<int> selectedGroups = null, int take = 0)
         {
@@ -274,7 +274,7 @@ namespace TopLearn.Core.Services
                         break;
                     }
             }
-            switch (oderByType)
+            switch (orderByType)
             {
                 case "date":
                     {
@@ -295,21 +295,41 @@ namespace TopLearn.Core.Services
             {
                 result = result.Where(c => c.CoursePrice > startPrice);
             }
-            if (selectedGroups! = null && selectedGroups.Any())
+            if (selectedGroups != null && selectedGroups.Any())
             {
-
+                foreach (int groupId in selectedGroups)
+                {
+                    result = result.Where(c => c.GroupId == groupId || c.SubGroup == groupId);
+                }
             }
             int skip = (pageId - 1) * take;
-
-            return result.Include(c => c.CourseEpisodes).Select(c => new ShowCourseListItemViewModel()
+            int pageCount = result.Include(c => c.CourseEpisodes).Select(c => new ShowCourseListItemViewModel()
             {
                 CourseId = c.CourseId,
                 ImageName = c.CourseImageName,
                 Price = c.CoursePrice,
                 TotalTime = new TimeSpan(c.CourseEpisodes.Sum(e => e.EpisodeTime.Ticks))
-           }).Skip(skip).Take(take).ToList();
+            }).Count() / take;
+          var query =   result.Include(c => c.CourseEpisodes).Select(c => new ShowCourseListItemViewModel()
+            {
+                CourseId = c.CourseId,
+                ImageName = c.CourseImageName,
+                Price = c.CoursePrice,
+                TotalTime = new TimeSpan(c.CourseEpisodes.Sum(e => e.EpisodeTime.Ticks))
+            }).Skip(skip).Take(take).ToList();
+
+
+            return Tuple.Create(query, pageCount);
+        }
+
+        public Course GetCourseForShow(int courseid)
+        {
+
+            return _context.Courses.Include(c => c.CourseEpisodes)
+                .Include(c => c.CourseStatus).Include(c => c.CourseLevel)
+                .Include(c => c.User)
+                .FirstOrDefault(c => c.CourseId == courseId);
+        }
     }
 
-}
-}
 }

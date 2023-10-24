@@ -73,6 +73,7 @@ namespace TopLearn.Wab
             services.AddTransient<IViewRenderService, RenderViewToString>();
             services.AddTransient<IPermissionService, PermissionService>();
             services.AddTransient<ICourseService, CourseService>();
+            services.AddTransient<IOrderService , OrderService>();
 
             #endregion
         }
@@ -87,15 +88,15 @@ namespace TopLearn.Wab
             app.UseStaticFiles();
             app.UseAuthentication();
 
-            //app.UseMvc(routes =>
-            //{   
-            //    routes.MapRoute(
-            //        name: "areas",
-            //        template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+            app.UseMvc(routes =>
+            {   
+                routes.MapRoute(
+                    name: "areas",
+                   template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
 
-            //    );
-            //    routes.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
-            //});
+               );
+               routes.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
+            });
 
             app.Run(async (context) =>
             {
