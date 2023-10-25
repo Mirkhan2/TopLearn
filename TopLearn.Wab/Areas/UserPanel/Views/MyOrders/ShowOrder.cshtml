@@ -1,0 +1,101 @@
+﻿@using TopLearn.Core.Services.Interfaces;
+@model TopLearn.DataLayeer.Entities.Order.Order
+
+@inject IUserService _UserService
+
+@{
+	ViewData["Title "] = "ShowOrder";
+	int sumOrder = Model.OrderDetails.Sum(od => od.Price * od.Count);
+}
+
+<div class="container">
+	<nav aria-label="breadcrumb">
+		<ul class="breadcrumb">
+			<li class="breadcrumb-item"><a href="/">تاپ لرن</a></li>
+			<li class="breadcrumb-item active" aria-current="page"> FaktorNMayesh  </li>
+		</ul>
+	</nav>
+</div>
+<main>
+	<div class="container">
+		<div class="user-account">
+			<div class="row">
+				<partial name="_SideBar" />
+				<div class="col-md-9 col-sm-8 col-xs-12">
+					<section class="user-account-content">
+						<header><h1> Faktor شما </h1></header>
+						<table class="table table-bordered ">
+							<thead>
+
+							<tr>
+									<th> DOvre</th>
+									<th>TEdad</th>
+									<th>Qimat</th>
+									<th>Jame</th>
+							</tr>
+
+							</thead>
+							<tbody>
+								@foreach (var item in Model.OrderDetails)
+								{
+									<tr>
+										<td>
+											<a href="/ShowCourse/@item.Course" target="_blank">@item.Course.CourseTitle</a>
+										</td>
+										<td>
+											@item.Count
+										</td>
+										<td>
+											@item.Price
+										</td>
+										<td>
+											@((item.Count * item.Price).ToString("#,0"))
+										</td>
+									</tr>
+
+								}
+								<tr>
+									<td colspan=" 3" class=" text-left">Kode Takhfif</td>
+									<td>
+										<input type="text" class="form-control" />
+										<input type="submit" class="btn btn-primary btn-block" style="margin-top :5px" value="Emale action" />
+									</td>
+								</tr>
+								<tr>
+									<td colspan=" 3" class=" text-left">jame kol</td>
+									<td>
+										@sumOrder
+									</td>
+								</tr>
+								@if (!Model.IsFinaly)
+								{
+									<tr>
+										<td colspan=" 2" class=" text-left"></td>
+										<td colspan="2">
+											@if (_UserService.BalanceUserWallet(User.Identity.Name) >= sumOrder)
+											{
+												<a class="btn btn-success btn-block" href="/UserPanel/MyOrder/FinalyOrder/@Model.OrderId">taeide Faktor</a>
+
+											}
+											else
+											{
+												<a class="btn btn-success btn-block" disabled="">taeide Faktor</a>
+												<div class="alert alert-danger">
+													Mojodi Kafi nemibashad Lotfan az tariqe in <a href="/UserPanel/Wallet" class="alert-link">Link </a>eqdam be sharzh hesab konid
+												</div>
+
+											}
+										</td>
+
+									</tr>
+								}
+							</tbody>
+						</table>
+
+
+					</section>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>

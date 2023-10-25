@@ -38,8 +38,8 @@ namespace TopLearn.Wab.Controllers
         [Authorize]
         public ActionResult BuyCourse(int id)
         {
-            _orderService.AddOrder(User.Identity.Name, id);
-            return Redirect("/ShowCourse/" +  id);  
+            int orderId =_orderService.AddOrder(User.Identity.Name, id);
+            return Redirect("/UserPanel/MyOrders/ShowOrder/" +  orderId);  
         }
     }
 }

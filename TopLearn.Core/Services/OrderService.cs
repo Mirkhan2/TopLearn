@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TopLearn.Core.Services.Interfaces;
 using TopLearn.DataLayeer.Context;
+using TopLearn.DataLayeer.Entities.Course;
 using TopLearn.DataLayeer.Entities.Order;
 using TopLearn.DataLayeer.Entities.Wallet;
 
@@ -125,6 +126,7 @@ namespace TopLearn.Core.Services
 
                 foreach (var detail in order.OrderDetails)
                 {
+                    
                     _context.UserCourses.Add(new UserCourse()
                     {
                         CourseId = detail.CourseId,
@@ -138,5 +140,7 @@ namespace TopLearn.Core.Services
 
             return false;
         }
-    }
+
+		
+	}
 }

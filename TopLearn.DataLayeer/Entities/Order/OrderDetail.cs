@@ -19,8 +19,9 @@ namespace TopLearn.DataLayeer.Entities.Order
         public int Count { get; set; }
         [Required]
         public int Price { get; set; }
+        public bool IsDelete { get; set; }
 
-        
+
         public virtual Order Order { get; set; }
         public virtual Course.Course Course { get; set; }
     }

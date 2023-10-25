@@ -53,6 +53,7 @@ namespace TopLearn.DataLayeer.Context
         public DbSet<CourseStatus> CourseStatuses { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<CourseEpisode> CourseEpisodes { get; set; }
+        public DbSet<UserCourse> UserCourses { get; set; }
 
 
         #endregion
@@ -64,8 +65,13 @@ namespace TopLearn.DataLayeer.Context
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            var cascadeFKs = modelBuilder.Model.GetEntityTypes()
+                .SelectMany(t => t.GetForeignKeys())
+              .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
 
-            
+            foreach (var fk in cascadeFKs)
+              fk.DeleteBehavior = DeleteBehavior.Restrict;
+
             modelBuilder.Entity<User>()
                 .HasQueryFilter(u => !u.IsDelete);
 
@@ -74,8 +80,12 @@ namespace TopLearn.DataLayeer.Context
 
             modelBuilder.Entity<CourseGroup>()
                 .HasQueryFilter(g => !g.IsDelete);
+
+            modelBuilder.Entity<OrderDetail>()
+                .HasQueryFilter(g => !g.IsDelete);
+
             modelBuilder.Entity<Course>()
-               .HasQueryFilter(g => !g.IsDelete);
+                .HasQueryFilter(g => !g.IsDelete);
 
             modelBuilder.Entity<Course>()
                 .HasOne<CourseGroup>(c => c.CourseGroup)
