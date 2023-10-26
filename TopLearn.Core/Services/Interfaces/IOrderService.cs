@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TopLearn.Core.DTOs.Order;
 using TopLearn.DataLayeer.Entities.Order;
 
 namespace TopLearn.Core.Services.Interfaces
@@ -14,5 +15,10 @@ namespace TopLearn.Core.Services.Interfaces
       
         Order GetOrderForUserPanel(string userName, int orderId);
         bool FinalyOrder(string userName,int OrderId);
+        List<Order> GetUserOrders(string userName);
+
+        #region Discount
+        DiscountUseType UseDiscount(int orderId, string code);
+        #endregion
     }
 }

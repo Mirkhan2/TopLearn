@@ -141,6 +141,28 @@ namespace TopLearn.Core.Services
             return false;
         }
 
-		
-	}
+		public List<Order> GetUserOrders(string userName)
+		{
+			int userId = _userService.GetUserIdByUserName(userName);    
+
+            return _context.Orders.Where(o =>o.UserId == userId).ToList();
+		}
+
+        public int UseDiscount(int orderId, string code)
+        {
+            var discount = _context.Discounts.SingleOrDefault(d => d.DiscountCode == code);
+
+            if (discount == null)
+            {
+                //1 yani peyda nakardam
+                return 1;
+            }
+
+            if (discount.StartDate != null && discount.StartDate<DateTime.Now)
+                return false;
+            {
+
+            }
+        }
+    }
 }

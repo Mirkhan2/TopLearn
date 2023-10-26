@@ -24,6 +24,13 @@
 				<div class="col-md-9 col-sm-8 col-xs-12">
 					<section class="user-account-content">
 						<header><h1> Faktor شما </h1></header>
+						@if (ViewBag.finaly == true)
+						{
+							<div class="alert alert-success">
+								Faktor Is Paid
+							</div>
+							
+						}
 						<table class="table table-bordered ">
 							<thead>
 
@@ -74,7 +81,7 @@
 										<td colspan="2">
 											@if (_UserService.BalanceUserWallet(User.Identity.Name) >= sumOrder)
 											{
-												<a class="btn btn-success btn-block" href="/UserPanel/MyOrder/FinalyOrder/@Model.OrderId">taeide Faktor</a>
+												<a class="btn btn-success btn-block" href="/UserPanel/MyOrders/FinalyOrder/@Model.OrderId">taeide Faktor</a>
 
 											}
 											else
