@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TopLearn.Core.Services.Interfaces;
+using TopLearn.DataLayeer.Entities.Course;
 
 namespace TopLearn.Wab.Controllers
 {
@@ -40,6 +42,27 @@ namespace TopLearn.Wab.Controllers
         {
             int orderId =_orderService.AddOrder(User.Identity.Name, id);
             return Redirect("/UserPanel/MyOrders/ShowOrder/" +  orderId);  
+        }
+        [Route("DownloadFile/{episodeId")]
+        public ActionResult DownloadFile(int episodeId)
+        {
+            var episode = _courseService.GetEpisodeById(episodeId);
+            string filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/courseFiles/",episode.EpisodeFileName);
+            string fileName = episode.EpisodeFileName;
+            if (episode.IsFree)
+            {
+                byte[] file = System.IO.File.ReadAllBytes(filepath);
+                return File(file, "application/force-download", fileName);
+            }
+            if (User.Identity.IsAuthenticated)
+            {
+                if (_orderService.IsUserInCourse(User.Identity.Name , episode.CourseId))
+                {
+                    byte[] file = System.IO.File.ReadAllBytes(filepath);
+                    return File(file, "application / force - download", fileName);
+                }
+            }
+            return Forbid();
         }
     }
 }

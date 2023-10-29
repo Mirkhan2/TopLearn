@@ -4,14 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using TopLearn.Core.DTOs.Order;
 using TopLearn.Core.Services.Interfaces;
 using TopLearn.DataLayeer.Context;
 using TopLearn.DataLayeer.Entities.Course;
 using TopLearn.DataLayeer.Entities.Order;
+using TopLearn.DataLayeer.Entities.User;
 using TopLearn.DataLayeer.Entities.Wallet;
 
 namespace TopLearn.Core.Services
 {
+   
     public class OrderService : IOrderService
     {
         private TopLearnContext _context;
@@ -99,6 +102,11 @@ namespace TopLearn.Core.Services
                 .FirstOrDefault(o => o.UserId == userId && o.OrderId == orderId);
         }
 
+        public Order GetOrderById(int orderId)
+        {
+            return _context.Orders.Find(orderId);
+        }
+
         public bool FinalyOrder(string userName, int orderId)
         {
             int userId = _userService.GetUserIdByUserName(userName);
@@ -126,7 +134,6 @@ namespace TopLearn.Core.Services
 
                 foreach (var detail in order.OrderDetails)
                 {
-                    
                     _context.UserCourses.Add(new UserCourse()
                     {
                         CourseId = detail.CourseId,
@@ -141,28 +148,95 @@ namespace TopLearn.Core.Services
             return false;
         }
 
-		public List<Order> GetUserOrders(string userName)
-		{
-			int userId = _userService.GetUserIdByUserName(userName);    
+        public List<Order> GetUserOrders(string userName)
+        {
+            int userId = _userService.GetUserIdByUserName(userName);
 
-            return _context.Orders.Where(o =>o.UserId == userId).ToList();
-		}
+            return _context.Orders.Where(o => o.UserId == userId).ToList();
+        }
 
-        public int UseDiscount(int orderId, string code)
+        public void UpdateOrder(Order order)
+        {
+            _context.Orders.Update(order);
+            _context.SaveChanges();
+        }
+
+        public DiscountUseType UseDiscount(int orderId, string code)
         {
             var discount = _context.Discounts.SingleOrDefault(d => d.DiscountCode == code);
 
             if (discount == null)
+                return DiscountUseType.NotFound;
+
+            if (discount.StartDate != null && discount.StartDate < DateTime.Now)
+                return DiscountUseType.EpierDate;
+
+            if (discount.EndDate != null && discount.EndDate >= DateTime.Now)
+                return DiscountUseType.EpierDate;
+
+
+            if (discount.UseableCount != null && discount.UseableCount < 1)
+                return DiscountUseType.Finishded;
+
+            var order = GetOrderById(orderId);
+            if (_context.userDiscountCodes.Any(d => d.UserId == order.UserId && d.DiscountId == discount.DiscountId))
+            return DiscountUseType.UserUsed;
+
+            int percent = (order.OrderSum * discount.DiscountPercent) / 100;
+            order.OrderSum = order.OrderSum - percent;
+
+            UpdateOrder(order);
+
+            if (discount.UseableCount != null)
             {
-                //1 yani peyda nakardam
-                return 1;
+                discount.UseableCount -= 1;
             }
 
-            if (discount.StartDate != null && discount.StartDate<DateTime.Now)
-                return false;
+            _context.Discounts.Update(discount);
+            _context.userDiscountCodes.Add(new UserDiscountCode()
             {
+                UserId = order.OrderId,
+                DiscountId = discount.DiscountId
+            });
+            _context.SaveChanges();
 
-            }
+
+
+            return DiscountUseType.Success;
+        }
+
+		public void AddDiscount(Discount discount)
+		{
+			_context.Discounts.Add(discount);
+            _context.SaveChanges();
+		}
+
+		public List<Discount> GetAllDiscounts()
+		{
+			return _context.Discounts.ToList();
+		}
+
+        public Discount GetDiscountById(int discountId)
+        {
+            return _context.Discounts.Find(discountId);
+        }
+
+        public void UpdateDiscount(Discount discount)
+        {
+            _context.Discounts.Update(discount);
+            _context.SaveChanges();
+        }
+
+        public bool IsExitCode(string code)
+        {
+            return _context.Discounts.Any(d =>d.DiscountCode == code);
+        }
+
+        public bool IsUserInCourse(string userName, int courseId)
+        {
+            int userId = _userService.GetUserIdByUserName(userName);
+            return _context.UserCourses.Any(c => c.UserId == userId && c.CourseId == courseId);
+
         }
     }
 }

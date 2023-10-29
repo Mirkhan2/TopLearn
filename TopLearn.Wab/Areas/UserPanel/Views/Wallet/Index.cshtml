@@ -31,14 +31,14 @@
                                             <input type="number" class="form-control" asp-for="Amount" placeholder="مبلغ به تومان">
                                         </div>
                                     </div>
-                              
+
                                     <div class="text-danger" asp-validation-summary="All"></div>
                                     <div class="col-md-7 col-sm-8 col-xs-12">
                                         <button class="btn btn-success"> شارژ کیف پول </button>
                                     </div>
                                 </div>
                             </form>
-                            <hr/>
+                            <hr />
                             @{
                                 List<WalletViewModel> list = ViewBag.ListWallet as List<WalletViewModel>;
                             }
@@ -67,7 +67,11 @@
                                             }
                                         </td>
                                         <td>
-                                            @item.Description
+                                            @{
+                                                
+                                                string tagHref = "<a href='/UserPanel/MyOrders/ShowOrder/" + item.Description.Replace("فاکتور شما #", "") + "' >#</a>";
+                                            }
+                                            @Html.Raw(item.Description.Replace("#", tagHref))
                                         </td>
                                     </tr>
                                 }
