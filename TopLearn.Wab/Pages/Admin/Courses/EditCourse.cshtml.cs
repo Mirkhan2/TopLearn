@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,9 +27,23 @@ namespace TopLearn.Wab.Pages.Admin.Courses
             var groups = _courseService.GetGroupForManageCourse();
             ViewData["Groups"] = new SelectList(groups, "Value", "Text" , Course.GroupId);
 
-            var subGroups = _courseService.GetSubGroupForManageCourse(int.Parse
-                (groups.First().Value));
-            ViewData["SubGroups"] = new SelectList(subGroups, "Value", "Text", Course.SubGroup??0);
+            List<SelectListItem> subgroups = new List<SelectListItem>()
+            {
+                new SelectListItem()
+                {
+                    Text = "Choose it",
+                    Value = ""
+
+                }
+            };
+            subgroups.AddRange(_courseService.GetSubGroupForManageCourse(Course.CourseId));
+            string selectedSubGroups = null;
+            if (Course.SubGroup != null)
+            {
+                selectedSubGroups = Course.SubGroup.ToString();
+            }
+
+            ViewData["SubGroups"] = new SelectList(subgroups, "Value", "Text", selectedSubGroups);
 
             var teachers = _courseService.GetTeachers();
             ViewData["Teachers"] = new SelectList(teachers, "Value", "Text",Course.TeacherId);

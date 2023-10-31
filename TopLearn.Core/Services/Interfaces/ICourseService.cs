@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,12 @@ namespace TopLearn.Core.Services.Interfaces
         List<SelectListItem> GetTeachers();
         List<SelectListItem> GetLevels();
         List<SelectListItem> GetStatues();
+        void AddGroup(CourseGroup group);
+        void UpdateGroup(CourseGroup group);
+        CourseGroup GetById(int groupId);
+
+       
+
 
 
         #endregion
@@ -38,6 +45,8 @@ namespace TopLearn.Core.Services.Interfaces
             int startPrice= 0 , int endPrice=0 ,List<int> selectedGroups = null , int take = 0);
 
         Course GetCourseForShow(int courseid);
+
+        List<ShowCourseListItemViewModel> GetPopularCourse();
         #endregion
 
         #region Episode
@@ -46,6 +55,15 @@ namespace TopLearn.Core.Services.Interfaces
         int AddEpisode(CourseEpisode episode , IFormFile episodeFile);
         CourseEpisode GetEpisodeById(int episodeId);
         void EditEpisode(CourseEpisode episode, IFormFile episodeFile);
+
+        #endregion
+
+        #region Comments
+
+        void AddComment(CourseComment comment);
+       Tuple<List<CourseComment>,int> GetCourseComments(int courseId, int pageId = 1);
+        IEnumerable GetSubGroupForManageCourse(CourseGroup courseGroup);
+
 
         #endregion
     }

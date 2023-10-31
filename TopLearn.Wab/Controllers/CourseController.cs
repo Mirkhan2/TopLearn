@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,12 @@ namespace TopLearn.Wab.Controllers
     {
         private ICourseService _courseService;
         private IOrderService _orderService;
-        public CourseController(ICourseService courseService , IOrderService orderService)
+        private IUserService _userService;
+        public CourseController(ICourseService courseService , IOrderService orderService ,IUserService userService)
         {
             _courseService = courseService;
             _orderService = orderService;
+            _userService = userService;
             
         }
         public IActionResult Index(int pageId = 1, string filter = ""
@@ -63,6 +66,21 @@ namespace TopLearn.Wab.Controllers
                 }
             }
             return Forbid();
+        }
+        
+        [HttpPost]
+        public IActionResult CreateComment(CourseComment comment)
+        {
+            comment.IsDelete = false;
+            comment.Createdate = DateTime.Now;
+            comment.UserId = _userService.GetUserIdByUserName(User.Identity.Name);  
+            _courseService.AddComment(comment);
+
+            return View("ShowComment" , _courseService.GetCourseComments(comment.CourseId));
+        }
+        public IActionResult ShowComment (int id , int pageId =1)
+        {
+            return View(_courseService.GetCourseComments(id , pageId));
         }
     }
 }

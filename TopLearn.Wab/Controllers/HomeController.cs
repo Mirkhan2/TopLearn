@@ -14,18 +14,16 @@ namespace TopLearn.Wab.Controllers
     {
         private IUserService _userService;
         private ICourseService _courseService;
-        public HomeController(ICourseService courseService)
+        public HomeController(IUserService userService , ICourseService courseService  )
         {
+            _userService = userService;
             _courseService = courseService;
         }
 
-
-        public HomeController(IUserService userService)
-        {
-            _userService = userService;
-        }
         public IActionResult Index()
         {
+            var popular = _courseService.GetPopularCourse();
+            ViewBag.PopularCourse = popular;
             return View(_courseService.GetCourse());
         }
 
@@ -34,7 +32,7 @@ namespace TopLearn.Wab.Controllers
 
         [Route("OnlinePayment/{id}")]
         public IActionResult onlinePayment(int id)
-        {
+        { 
             if (HttpContext.Request.Query["Status"] != "" &&
                 HttpContext.Request.Query["Status"].ToString().ToLower() == "ok"
                 && HttpContext.Request.Query["Authority"] != "")

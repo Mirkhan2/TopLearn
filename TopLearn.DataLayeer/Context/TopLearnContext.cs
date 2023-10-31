@@ -55,6 +55,7 @@ namespace TopLearn.DataLayeer.Context
         public DbSet<Course> Courses { get; set; }
         public DbSet<CourseEpisode> CourseEpisodes { get; set; }
         public DbSet<UserCourse> UserCourses { get; set; }
+        public DbSet<CourseComment> CourseComment { get; set; }
 
 
         #endregion

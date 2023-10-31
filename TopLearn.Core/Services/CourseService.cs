@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace TopLearn.Core.Services
 
         public List<CourseGroup> GetAllGroup()
         {
-            return _context.CourseGroups.ToList();
+            return _context.CourseGroups.Include(c => c.CourseGroups).ToList();
         }
 
         public List<SelectListItem> GetGroupForManageCourse()
@@ -219,6 +220,22 @@ namespace TopLearn.Core.Services
         {
             return _context.CourseEpisodes.Where(e => e.CourseId == courseId).ToList();
         }
+        public List<ShowCourseListItemViewModel> GetPopularCourse()
+        {
+            return _context.Courses.Include(c => c.OrderDetails)
+                .Where(c => c.OrderDetails.Any())
+                .OrderByDescending(d => d.OrderDetails.Count)
+                .Take(8)
+                .Select(c => new ShowCourseListItemViewModel()
+                {
+                    CourseId = c.CourseId,
+                    ImageName = c.CourseImageName,
+                    Price = c.CoursePrice,
+                    Title = c.CourseTitle,
+                    TotalTime = new TimeSpan(c.CourseEpisodes.Sum(e => e.EpisodeTime.Ticks))
+                })
+                .ToList();
+        }
 
         public CourseEpisode GetEpisodeById(int episodeId)
         {
@@ -310,7 +327,7 @@ namespace TopLearn.Core.Services
                 Price = c.CoursePrice,
                 TotalTime = new TimeSpan(c.CourseEpisodes.Sum(e => e.EpisodeTime.Ticks))
             }).Count() / take;
-          var query =   result.Include(c => c.CourseEpisodes).Select(c => new ShowCourseListItemViewModel()
+            var query = result.Include(c => c.CourseEpisodes).Select(c => new ShowCourseListItemViewModel()
             {
                 CourseId = c.CourseId,
                 ImageName = c.CourseImageName,
@@ -331,6 +348,41 @@ namespace TopLearn.Core.Services
                 .Include(c => c.User).Include(c => c.UserCourses)
                 .FirstOrDefault(c => c.CourseId == courseid);
         }
+
+        public void AddComment(CourseComment comment)
+        {
+            _context.CourseComment.Add(comment);
+            _context.SaveChanges();
+        }
+
+        public Tuple<List<CourseComment>, int> GetCourseComments(int courseId, int pageId = 1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable GetSubGroupForManageCourse(CourseGroup courseGroup)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddGroup(CourseGroup group)
+        {
+
+            _context.CourseGroups.Add(group);
+            _context.SaveChanges();
+        }
+
+        public void UpdateGroup(CourseGroup group)
+        {
+            _context.CourseGroups.Update(group);
+            _context.SaveChanges();
+        }
+
+        public CourseGroup GetById(int groupId)
+        {
+            return _context.CourseGroups.Find(groupId);
+        }
     }
+
 
 }
