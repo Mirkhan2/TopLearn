@@ -382,6 +382,39 @@ namespace TopLearn.Core.Services
         {
             return _context.CourseGroups.Find(groupId);
         }
+
+        public void AddsVote(int userId, int courseId, bool vote)
+        {
+            var Uservote = _context.CourseVotes.FirstOrDefault(c =>c.UserId == userId && c.CourseId == courseId);
+            if (Uservote !=null)
+            {
+                Uservote.Vote = vote;
+            }
+            else
+            {
+                Uservote = new CourseVote()
+                {
+                    CourseId = courseId,
+                    UserId = userId,
+                    Vote = vote
+
+                };
+                _context.Add(Uservote);
+            }
+            _context.SaveChanges();
+        }
+
+        public Tuple<int, int> GetCourseVotes(int courseId)
+        {
+            var votes = _context.CourseVotes.Where(v => v.CourseId == courseId).Select(v => v.Vote).ToList();
+
+            return Tuple.Create(votes.Count(c=> c),votes .Count(c => ! c) );
+        }
+
+        public bool IsFree(int courseId)
+        {
+            return _context.Courses.Where(c => c.CourseId == courseId).Select(c=> c.CoursePrice).First() == 0;
+        }
     }
 
 

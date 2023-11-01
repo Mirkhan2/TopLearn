@@ -53,7 +53,18 @@
                     <img src="/course/image/@Model.CourseImageName">
 
                     @Html.Raw(Model.CourseDescription)
+                    @if (!string.IsNullOrEmpty(Model.DemoFileName))
+                    {
+                        <video style="width :100%" controls poster="/course/image/@Model.CourseImageName">
+                            <source src="/course/demoes/@Model.DemoFileName"/>
 
+                        </video>
+                    }
+
+                    <div id="vot">
+                        
+
+                    </div>
                     @if (!IsUserInCourse)
                     {
                         <div class="alert alert-info">
@@ -221,6 +232,17 @@
 
         function pageComment(pageid) {
             $("#listComment").load("/Course/ShowComment/" + @Model.CourseId+"?pageId=" + pageid);
+        }
+        $(function () {
+            $("vot").load("/Course/CourseVote/"Model.CourseId);
+
+        });
+        function vote(vote)
+        {
+            $("vot").fadeOut('slow');
+            $("vot").load("/Course/AddVote/(Model.CourseId)?vote ="+vote);
+            $("vot").fadeIn('slow');
+
         }
     </script>
 }

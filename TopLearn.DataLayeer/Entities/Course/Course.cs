@@ -80,6 +80,7 @@ namespace TopLearn.DataLayeer.Entities.Course
         public List<OrderDetail> OrderDetails { get; set; }
         public List<UserCourse> UserCourses { get; set; }
         public List<CourseComment> CourseComments { get; set; }
+        public List<CourseVote> CourseVotes { get; set; }
         #endregion
     }
 }

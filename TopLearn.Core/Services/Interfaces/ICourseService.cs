@@ -47,6 +47,7 @@ namespace TopLearn.Core.Services.Interfaces
         Course GetCourseForShow(int courseid);
 
         List<ShowCourseListItemViewModel> GetPopularCourse();
+        bool IsFree(int courseId);
         #endregion
 
         #region Episode
@@ -64,6 +65,12 @@ namespace TopLearn.Core.Services.Interfaces
        Tuple<List<CourseComment>,int> GetCourseComments(int courseId, int pageId = 1);
         IEnumerable GetSubGroupForManageCourse(CourseGroup courseGroup);
 
+
+        #endregion
+        #region  Course Vote
+
+        void AddsVote(int userId, int courseId, bool vote);
+        Tuple<int , int> GetCourseVotes(int courseId);
 
         #endregion
     }

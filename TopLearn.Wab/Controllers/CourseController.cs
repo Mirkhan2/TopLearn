@@ -82,5 +82,24 @@ namespace TopLearn.Wab.Controllers
         {
             return View(_courseService.GetCourseComments(id , pageId));
         }
+        public IActionResult CourseVote(int Id)
+        {
+            if (! _courseService.IsFree(Id))
+            {
+                if (_orderService.IsUserInCourse(User.Identity.Name , Id))
+                {
+                    ViewBag.NotAccess = true;
+                }
+            }
+            return PartialView(_courseService.GetCourseVotes(Id));
+
+        }
+        [Authorize]
+        public IActionResult AddVote(int id , bool vote)
+        {
+            _courseService.AddsVote(_userService.GetUserIdByUserName(User.Identity.Name),id, vote);
+
+            return PartialView("CourseVote", _courseService.GetCourseVotes(id));
+        }
     }
 }
