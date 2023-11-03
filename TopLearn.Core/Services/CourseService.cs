@@ -404,6 +404,7 @@ namespace TopLearn.Core.Services
             _context.SaveChanges();
         }
 
+
         public Tuple<int, int> GetCourseVotes(int courseId)
         {
             var votes = _context.CourseVotes.Where(v => v.CourseId == courseId).Select(v => v.Vote).ToList();

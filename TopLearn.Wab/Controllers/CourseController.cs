@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TopLearn.Core.Services.Interfaces;
@@ -31,12 +32,55 @@ namespace TopLearn.Wab.Controllers
 
         }
         [Route("ShowCourse / {id}")]
-        public IActionResult ShowCourse(int id)
+        public IActionResult ShowCourse(int id , int episode =0)
         {
             var course = _courseService.GetCourseForShow(id);
             if (course == null)
             {
                 return NotFound();
+            }
+            if (episode != 0 && User.Identity.IsAuthenticated)
+            {
+                if (!course.CourseEpisodes.Any(e => e.EpisodeId != episode))
+                {
+                    return NotFound();
+                }
+                if (!course.CourseEpisodes.First(e =>e.EpisodeId == episode).IsFree)
+                {
+                    if (!_orderService.IsUserInCourse(User.Identity.Name , id))
+                    {
+                        return NotFound();
+                    }
+                }
+                var ep = course.CourseEpisodes.First(e => e.EpisodeId == episode);
+
+                ViewBag.Episode = ep;
+                string filePath = Directory.GetCurrentDirectory();
+
+                if (ep.IsFree)
+                {
+                    filePath = System.IO.Path.Combine(filePath, "wwwroot/courseOnline", ep.EpisodeFileName.Replace(".rar", "mp4"));
+                }
+                else
+                {
+                    filePath = System.IO.Path.Combine(filePath, "wwwroot/CourseFilesOnline", ep.EpisodeFileName.Replace(".rar", "mp4"));
+
+                }
+
+                if (!System.IO.File.Exists(filePath))
+                {
+                    string targetPath = Directory.GetCurrentDirectory();
+                    if (ep.IsFree)
+                    {
+                        filePath = System.IO.Path.Combine(targetPath, "wwwroot/courseOnline");
+                    }
+                    else
+                    {
+                        filePath = System.IO.Path.Combine(filePath, "wwwroot/CourseFilesOnline");
+                    }
+                    
+                }
+                ViewBag.FilePath = filePath;
             }
             return View(course);    
         }

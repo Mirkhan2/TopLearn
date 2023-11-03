@@ -71,6 +71,7 @@ namespace TopLearn.Core.Services.Interfaces
 
         void AddsVote(int userId, int courseId, bool vote);
         Tuple<int , int> GetCourseVotes(int courseId);
+        ///istrahati  maasdomiiii
 
         #endregion
     }
