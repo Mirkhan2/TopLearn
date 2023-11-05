@@ -78,26 +78,48 @@ namespace TopLearn.Wab
             #endregion
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.Value.ToString().ToLower().StartsWith("/coursefilesonline"))
+                {
+                    var callingUrl = context.Request.Headers["Referer"].ToString();
+                    if (callingUrl != "" && (callingUrl.StartsWith("https://localhost:44349") || callingUrl.StartsWith("https://localhost:44349")))
+                    {
+                        await next.Invoke();
+                    }
+                    else
+                    {
+                        context.Response.Redirect("/Login");
+                    }
+                }
+                else
+                {
+                    await next.Invoke();
+                }
+
+
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
             app.UseStaticFiles();
             app.UseAuthentication();
 
             app.UseMvc(routes =>
-            {   
+            {
                 routes.MapRoute(
                     name: "areas",
-                   template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
 
-               );
-               routes.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
+                );
+                routes.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
             });
-
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Hello World!");
