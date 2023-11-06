@@ -232,7 +232,7 @@ namespace TopLearn.Core.Services
                     ImageName = c.CourseImageName,
                     Price = c.CoursePrice,
                     Title = c.CourseTitle,
-                    TotalTime = new TimeSpan(c.CourseEpisodes.Sum(e => e.EpisodeTime.Ticks))
+                   TotalTime = new TimeSpan(c.CourseEpisodes.Sum(e => e.EpisodeTime.Ticks))
                 })
                 .ToList();
         }

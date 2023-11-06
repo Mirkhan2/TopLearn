@@ -32,7 +32,10 @@ namespace TopLearn.Wab
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddMvc();
+            //services.AddControllersWithViews();
+            services.AddMvc(options => options.EnableEndpointRouting = false);
+            services.AddRazorPages();
+          
 
             //services.Configure<FormOptions>(options =>
             //{
@@ -107,18 +110,35 @@ namespace TopLearn.Wab
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseRouting();
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseMvc();
 
-            app.UseMvc(routes =>
+
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "areas",
+            //        template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+
+            //    );
+            //    routes.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
+            //});
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "areas",
-                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                endpoints.MapControllerRoute(
 
-                );
-                routes.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
+                   name: "MyAreas",
+                   pattern: "/{area:exists}{controller =Home}/{action=Index}/{id}"
+
+                   );
+                endpoints.MapControllerRoute(
+
+                    name :"Default",
+                    pattern: "{controller =Home}/{action=Index}/{id}"
+
+                    );
             });
             app.Run(async (context) =>
             {
