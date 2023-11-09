@@ -57,6 +57,7 @@ namespace TopLearn.DataLayeer.Entities.User
         public virtual List<Wallet.Wallet> Wallets { get; set; }
         public virtual List<Course.Course> Courses { get; set; }
         public virtual List<Order.Order> Orders  { get; set; }
+        public List<Question.Question> Questions { get; set; }
         public List<UserCourse> UserCourses { get; set; }
         public  List<UserDiscountCode> UserDiscountCodes { get; set; }
         public  List<CourseComment> CourseComments { get; set; }

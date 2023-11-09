@@ -6,7 +6,7 @@ namespace TopLearn.Wab.ViewComponents
 {
     public class CourseGroupComponent:ViewComponent
     {
-        ICourseService _courseService;
+        private ICourseService _courseService;
         public CourseGroupComponent(ICourseService courseService)
         {
           _courseService = courseService;

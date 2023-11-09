@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using TopLearn.DataLayeer.Entities.Course;
 using TopLearn.DataLayeer.Entities.Order;
 using TopLearn.DataLayeer.Entities.Permission;
+using TopLearn.DataLayeer.Entities.Question;
 using TopLearn.DataLayeer.Entities.User;
 using TopLearn.DataLayeer.Entities.Wallet;
 
@@ -65,6 +66,14 @@ namespace TopLearn.DataLayeer.Context
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Discount> Discounts { get; set; }
+
+        #endregion
+
+        #region Question
+
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Answer> Answers { get; set; }
+
 
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
