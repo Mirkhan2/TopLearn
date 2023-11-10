@@ -18,10 +18,12 @@ namespace TopLearn.DataLayeer.Entities.Question
         [Required]
         public int UserId { get; set; }
 
+        [Display(Name ="Onvane Soal")]
         [Required(ErrorMessage ="Onvane soal")]
         [MaxLength(400)]
         public string  Title { get; set; }
 
+        [Display(Name = "Matne SOal")]
         [Required(ErrorMessage = "Matne soale")]
         public string  Body { get; set; }
 

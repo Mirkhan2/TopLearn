@@ -77,6 +77,7 @@ namespace TopLearn.Wab
             services.AddTransient<IPermissionService, PermissionService>();
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<IOrderService , OrderService>();
+            services.AddTransient<IForumService, ForumService>();
 
             #endregion
         }
