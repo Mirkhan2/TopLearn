@@ -1,4 +1,5 @@
 ﻿@model TopLearn.Core.DTOs.Question.ShowQuestionVM
+@using System.Security.Claims;
 @using TopLearn.Core.Convertor
 
 @{
@@ -38,13 +39,22 @@
             <div class="inner" style="margin-top: 25px;">
                 @foreach (var answer in Model.Answers)
                 {
-                    <div class="panel">
+                    <div class="panel"@(answer.IsTrue)?"IsTrue":"">
                         <div class="panel-heading">
                             <img src="~/UserAvatar/@answer.User.UserAvatar" style="max-width: 40px; border-radius: 20px;" />
                             @answer.User.UserName | @answer.CreateDate.ToShamsi()
                         </div>
                         <div class="panel-body">
                             @Html.Raw(answer.BodyAnswer)
+
+                            @if (User.Identity.IsAuthenticated && Model.Question.UserId == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)))
+                            {
+                                <p>
+                                    <a class="btn btn-success pull-left" asp-action="SelectTrueAnswer" asp-route-questionId="@Model.Question.QuestionId" asp-route-answerId="@answer.AnswerId">
+                                        Pasokhe Dorost
+                                    </a>
+                                </p>
+                            }
                         </div>
                     </div>
                 }
@@ -67,6 +77,12 @@
                         </div>
                     </div>
                 </div>
+            }
+            else
+            {
+                <div class="alert alert-danger">
+                    please login for answer question
+                    </div>
             }
           
         </div>

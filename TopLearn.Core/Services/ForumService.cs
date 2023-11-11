@@ -19,7 +19,7 @@ namespace TopLearn.Core.Services
             _context = context;
         }
 
-        public void AddAnser(Answer answer)
+        public void AddAnswer(Answer answer)
         {
             _context.Answers.Add(answer);
             _context.SaveChanges();
@@ -34,6 +34,8 @@ namespace TopLearn.Core.Services
             return question.QuestionId;
         }
 
+      
+
         public ShowQuestionVM ShowQuestion(int questionId)
         {
             var question = new ShowQuestionVM();
@@ -41,7 +43,34 @@ namespace TopLearn.Core.Services
             question.Answers = _context.Answers.Where(a => a.QuestionId == questionId).Include(u =>u.User).ToList();
             return question;
         }
+        public IEnumerable<Question> GetQuestions(int? courseId, string filter = "")
+        {
+            IQueryable<Question> result = _context.Questions.Where(q => EF.Functions.Like(q.Title, $"%{filter}%"));
 
-     
+            if (courseId != null)
+            {
+                result = result.Where(q => q.CourseId == courseId);
+            }
+            //paging skip take
+            return result.Include(q =>q.Course).Include(q=>q.User).ToList();
+
+        }
+        public void ChangeIsTrueAnswer(int questionId, int answerId)
+        {
+            var answers = _context.Answers.Where(a => a.QuestionId == questionId);
+            foreach (var ans in answers)
+            {
+                ans.IsTrue = false;
+                if (ans.AnswerId == answerId)
+                {
+                    ans.IsTrue = true;
+                }
+                _context.UpdateRange(answers);
+                _context.SaveChanges();
+
+            }
+        }
+
+        
     }
 }

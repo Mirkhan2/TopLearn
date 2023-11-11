@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
+using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TopLearn.Core.Services.Interfaces;
@@ -14,9 +15,10 @@ namespace TopLearn.Wab.Controllers
         {
             _forumService = forumService;
         }
-        public IActionResult Index()
+        public IActionResult Index(int ? courseId , string filter ="")
         {
-            return View();
+            ViewBag.CourseId = courseId;
+            return View(_forumService.GetQuestions(courseId, filter));
         }
 
         #region Create Question
@@ -57,9 +59,12 @@ namespace TopLearn.Wab.Controllers
 
         public IActionResult Answer(int id , string body)
         {
+
             if (!string.IsNullOrEmpty(body))
             {
-                _forumService.AddAnser(new Answer()
+                var sanitizer = new HtmlSanitizer();
+                body = sanitizer.Sanitize(body);
+                _forumService.AddAnswer(new Answer()
                 {
                     BodyAnswer = body,
                     CreateDate = DateTime.Now ,
@@ -68,6 +73,19 @@ namespace TopLearn.Wab.Controllers
                 });
             }
             return RedirectToAction("ShowQuestion",new {id });
+        }
+        [Authorize]
+        public IActionResult SelectIsTrueAnswer(int questionId , int answerId)
+        {
+            int currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var question = _forumService.ShowQuestion(questionId);
+            if (question.Question.UserId == currentUserId)
+            {
+                _forumService.ChangeIsTrueAnswer(questionId, answerId);
+            }
+            return RedirectToAction("ShowQuestion " , new {id = questionId});
+
+
         }
         #endregion
     }

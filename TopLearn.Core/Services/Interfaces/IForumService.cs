@@ -17,10 +17,13 @@ namespace TopLearn.Core.Services.Interfaces
         //qabeliat jdid view Model 
         ShowQuestionVM ShowQuestion(int questionId);
 
+        IEnumerable<Question> GetQuestions(int? courseId ,string filter = "" );
+
         #endregion
 
         #region Answer
-        void AddAnser(Answer answer);
+        void AddAnswer(Answer answer);
+        void ChangeIsTrueAnswer(int  questionId, int answerId);
 
         #endregion
     }

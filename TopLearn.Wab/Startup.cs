@@ -85,6 +85,14 @@ namespace TopLearn.Wab
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
 
+            app.Use(async (context , next ) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Response.Redirect("/Home/Error404");
+                }
+            });
             app.Use(async (context, next) =>
             {
                 if (context.Request.Path.Value.ToString().ToLower().StartsWith("/coursefilesonline"))

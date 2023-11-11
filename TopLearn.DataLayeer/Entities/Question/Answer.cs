@@ -26,6 +26,8 @@ namespace TopLearn.DataLayeer.Entities.Question
         [Required]
         public string  BodyAnswer { get; set; }
 
+        public bool  IsTrue { get; set; } = false;
+
         [Required]
         public DateTime CreateDate { get; set; }
 
