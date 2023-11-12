@@ -48,6 +48,9 @@ namespace TopLearn.Core.Services.Interfaces
 
         List<ShowCourseListItemViewModel> GetPopularCourse();
         bool IsFree(int courseId);
+        List<Course> GetAllMasterCourses(string userName);
+        List<CourseEpisode> GetCourseEpisodesByCourseId(int courseId);
+        bool AddEpisode(AddEpisodeViewModel episodeViewModel  , string userName);
         #endregion
 
         #region Episode

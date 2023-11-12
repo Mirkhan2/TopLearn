@@ -36,5 +36,19 @@
 				</ul>
 			</div>
 		</section>
+
+		@if (_permissionService.CheckPermission(10, User.Identity.Name ))
+		{
+			<section>
+				<header><h3> panele modares کار </h3></header>
+				<div class="inner">
+					<ul>
+						<li><a action="MasterCourseList" asp-controller=" Master">Modiriyate dovreha </a></li>
+					</ul>
+				</div>
+			</section>
+		}
+		
+		
 	</aside>
 </div>

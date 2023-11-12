@@ -439,6 +439,43 @@ namespace TopLearn.Core.Services
         {
             throw new NotImplementedException();
         }
+
+        public List<Course> GetAllMasterCourses(string userName)
+        {
+            var userId = _context.Users.FirstOrDefault(s => s.UserName == userName).UserId;
+
+            var courses = _context.Courses.Include(s => s.CourseStatus).Include(s => s.CourseEpisodes).Where(s => s.TeacherId == userId).ToList();
+            return courses;
+        }
+
+        public List<CourseEpisode> GetCourseEpisodesByCourseId(int courseId)
+        {
+           var episodes = _context.CourseEpisodes.Include(s => s.Course).Where(s => s.CourseId == courseId).ToList();  
+            return episodes;
+        }
+
+        public bool AddEpisode(AddEpisodeViewModel episodeViewModel , string userName)
+        {
+           var course  = GetCourseById(episodeViewModel.CourseId);
+
+            var userId = _context.Users.FirstOrDefault( s => s.UserName == userName).UserId;
+            if (course == null || course.TeacherId != userId)
+            {
+                return false;
+            }
+            var episode = new CourseEpisode()
+            {
+                CourseId = course.CourseId,
+                IsFree = episodeViewModel.IsFree,
+                EpisodeTitle = episodeViewModel.EpisodeTitle,
+                EpisodeTime = episodeViewModel.EpisodeTime,
+                EpisodeFileName = episodeViewModel.EpisodeFileName,
+            };
+            _context.Add(episode);
+            _context.SaveChanges();
+
+            return true;
+        }
     }
 
 
