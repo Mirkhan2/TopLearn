@@ -11,6 +11,8 @@ namespace TopLearn.Core.Convertor
         public static string FixEmail(string email)
         {
             return email.Trim().ToLower();
+            //return email.Trim().ToLower();
+
         }
     }
 }

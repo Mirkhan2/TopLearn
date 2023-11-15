@@ -9,6 +9,7 @@ namespace TopLearn.Core.DTOs.Course
 {
     public  class AddEpisodeViewModel
     {
+        
         public int CourseId { get; set; }
 
         [Display(Name = "عنوان بخش")]

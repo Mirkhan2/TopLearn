@@ -18,13 +18,12 @@ namespace TopLearn.Core.Services
         {
             _context = context;
         }
-
         public void AddAnswer(Answer answer)
         {
             _context.Answers.Add(answer);
             _context.SaveChanges();
         }
-
+       //15Oct
         public int AddQuestion(Question question)
         {
             question.CreateDate = DateTime.Now;
@@ -33,8 +32,6 @@ namespace TopLearn.Core.Services
            _context.SaveChanges();
             return question.QuestionId;
         }
-
-      
 
         public ShowQuestionVM ShowQuestion(int questionId)
         {
