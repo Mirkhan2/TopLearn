@@ -11,6 +11,7 @@ namespace TopLearn.Core.DTOs.Question
     {
         public DataLayeer.Entities.Question.Question Question { get; set; }
         public List<Answer > Answers { get; set; }
+        //public ShowQuestionVM() { }
         //15Oct Update
     }
 }
