@@ -35,6 +35,7 @@ namespace TopLearn.Core.Services.Interfaces
 					UserId = userId
 				});
 			}
+			//_context.SaveChanges();
 			_context.SaveChanges();
 		}
 
