@@ -54,11 +54,13 @@ namespace TopLearn.Core.Services.Interfaces
 		{
 			_context.Roles.Add(role);
 			_context.SaveChanges();
+			//_context.SaveChanges();
 			return role.RoleId;
 		}
 
 		public Role GetRoleById(int roleId)
 		{
+			//return _context.Roles.Find(roleId);
 			return _context.Roles.Find(roleId);
 		}
 
