@@ -68,6 +68,7 @@ namespace TopLearn.Core.Services.Interfaces
 		{
 			_context.Roles.Update(role);
 			_context.SaveChanges();
+			//_context.SaveChanges();
 		}
 
 		public void DeleteRole(Role role)
