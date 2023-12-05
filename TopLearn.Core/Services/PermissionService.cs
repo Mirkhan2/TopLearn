@@ -107,7 +107,8 @@ namespace TopLearn.Core.Services.Interfaces
            _context.RolePermission.Where(p => p.RoleId == roleId )
 				.ToList().ForEach(p => _context.RolePermission.Remove(p));
 
-			AddPermissionsToRole (roleId, permissions);
+			//AddPermissionsToRole (roleId, permissions);
+			AddPermissionsToRole(roleId, permissions);
         }
 
         public bool CheckPermission(int permissionId, string userName)
