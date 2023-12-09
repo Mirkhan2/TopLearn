@@ -91,6 +91,7 @@ namespace TopLearn.Core.Services.Interfaces
 					PermissionId = p,
 					RoleId = roleId
 
+
 				});
 			}
 		}
