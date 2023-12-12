@@ -114,8 +114,8 @@ namespace TopLearn.Core.Services.Interfaces
 
         public bool CheckPermission(int permissionId, string userName)
         {
-			int userId= _context.Users.Single(u => u.UserName == userName).UserId;
-
+			//int userId= _context.Users.Single(u => u.UserName == userName).UserId;
+			int userId = _context.Users.Single(u =>u.UserName == userName).UserId;
           List<int> UserRoles = _context.UserRoles
 				.Where(r => r.UserId == userId).Select(r =>r.RoleId).ToList();
 
