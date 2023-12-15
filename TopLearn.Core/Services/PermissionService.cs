@@ -89,6 +89,7 @@ namespace TopLearn.Core.Services.Interfaces
 				_context.RolePermission.Add(new RolePermission()
 				{
 					PermissionId = p,
+					//RoleId = roleId
 					RoleId = roleId
 
 
